@@ -1,0 +1,25 @@
+{
+	"name": "exportcase",
+	"version": "0.3.0",
+	"main": "index.js",
+	"bin": {
+		"exportcase": "./bin/exportcase"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ferdodo/exportcase.git"
+	},
+	"scripts": {
+		"get-binary": "mkdir -p bin && cp ../binary/target/release/exportcase ./bin/exportcase"
+	},
+	"keywords": [
+		"typescript",
+		"validator",
+		"file-naming",
+		"naming-convention",
+		"exports"
+	],
+	"author": "Thomas Riffard",
+	"license": "MIT",
+	"description": "A TypeScript validator that ensures file names match their exported name"
+}

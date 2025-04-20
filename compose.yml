@@ -1,0 +1,10 @@
+services:
+  binary:
+    build:
+      context: ./binary
+
+  package:
+    build:
+      context: ./package 
+    depends_on:
+      - binary
