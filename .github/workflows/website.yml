@@ -23,6 +23,7 @@ jobs:
       - name:  website
         run: |
           npm install
+          cp -r ../ui/public ./public
           npm run build
         working-directory: ./website
 
