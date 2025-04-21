@@ -1,0 +1,12 @@
+{
+	"type": "module",
+	"scripts": {
+		"build": "tsc && vite build --base .",
+		"start": "vite --port 25032 --host"
+	},
+	"devDependencies": {
+		"exportcase-ui": "file:../ui",
+		"typescript": "^5.8.3",
+		"vite": "^6.3.2"
+	}
+}

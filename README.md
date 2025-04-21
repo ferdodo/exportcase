@@ -1,11 +1,10 @@
 # exportcase
 
-A TypeScript validator that ensures file names match their exported name.
+Opinionated file name validator for TypeScript.
 
 ## Features
 
 - Enforces strict file name conventions based on exported content
-- Supports TSX files
 - Provides clear error messages with suggestions for correct naming
 
 ## Installation
@@ -18,7 +17,9 @@ npm install --save-dev exportcase
 
 ### Command Line
 
+```bash
 exportcase check ./src
+```
 
 ## Validation Rules
 

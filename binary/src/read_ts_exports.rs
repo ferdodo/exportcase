@@ -10,25 +10,14 @@ use swc_ecma_ast::{
 };
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 
-/// Lit les exports d'un fichier TypeScript
-///
-/// # Arguments
-/// * `src_file` - Le fichier source TypeScript à analyser
-///
-/// # Returns
-/// Une structure TSExports contenant les exports du fichier
 pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
-    // Créer les structures de base pour le parsing SWC
     let cm: Lrc<SourceMap> = Default::default();
     let handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
     
-    // Charger le fichier source
     let file_path = Path::new(&src_file.path);
     let fm = cm.load_file(file_path)
         .map_err(|e| format!("Impossible de charger le fichier: {}", e))?;
     
-    // Configurer l'analyseur lexical et syntaxique avec une approche simplifiée
-    // On utilise uniquement la syntaxe TypeScript standard (pas de TSX)
     let syntax = Syntax::Typescript(Default::default());
     
     let lexer = Lexer::new(
@@ -40,21 +29,17 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     
     let mut parser = Parser::new_from(lexer);
     
-    // Parser le module
     let module = parser.parse_module()
         .map_err(|e| format!("Erreur lors du parsing: {:?}", e))?;
     
-    // Initialiser la structure des exports
     let mut ts_exports = TSExports {
         default_export: None,
         named_exports: Vec::new(),
     };
     
-    // Parcourir tous les éléments du module et extraire les exports
     for item in &module.body {
         match item {
             ModuleItem::ModuleDecl(decl) => match decl {
-                // Export par défaut
                 ModuleDecl::ExportDefaultDecl(ExportDefaultDecl { decl, .. }) => {
                     match decl {
                         DefaultDecl::Class(class_expr) => {
@@ -71,14 +56,12 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                     }
                 },
                 
-                // Export d'expression par défaut (ex: export default myFunc)
                 ModuleDecl::ExportDefaultExpr(ExportDefaultExpr { expr, .. }) => {
                     if let swc_ecma_ast::Expr::Ident(ident) = &**expr {
                         ts_exports.default_export = Some(ident.sym.to_string());
                     }
                 },
                 
-                // Export de déclarations nommées (ex: export const myFunc = ...)
                 ModuleDecl::ExportDecl(ExportDecl { decl, .. }) => match decl {
                     Decl::Class(class_decl) => {
                         ts_exports.named_exports.push(class_decl.ident.sym.to_string());
@@ -96,7 +79,6 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                     _ => {},
                 },
                 
-                // Export de noms spécifiques (ex: export { myFunc, MyComponent })
                 ModuleDecl::ExportNamed(named_export) => {
                     for spec in &named_export.specifiers {
                         if let ExportSpecifier::Named(named_spec) = spec {
@@ -126,7 +108,6 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     Ok(ts_exports)
 }
 
-// Fonction utilitaire pour extraire le nom d'un motif de variable
 fn extract_var_name(pat: &swc_ecma_ast::Pat) -> Option<String> {
     use swc_ecma_ast::Pat;
     

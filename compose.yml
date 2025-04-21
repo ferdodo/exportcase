@@ -8,3 +8,15 @@ services:
       context: ./package 
     depends_on:
       - binary
+
+  ui:
+    build: ui
+    ports:
+      - "127.0.0.1:26023:26023"
+
+  website:
+    build: website
+    ports:
+      - "25032:25032"
+    depends_on:
+      - ui
