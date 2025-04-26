@@ -1,6 +1,6 @@
 import React from "react";
 
-export function hellop() {
+export function hello3() {
 	const count = 3;
 
 	return (
@@ -8,4 +8,8 @@ export function hellop() {
 			<p>Count: {count}</p>
 		</div>
 	);
+}
+
+export function hello2() {
+	return <div>Hello</div>;
 }

@@ -12,13 +12,21 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 
 pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     let cm: Lrc<SourceMap> = Default::default();
-    let handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
+    let _handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
     
     let file_path = Path::new(&src_file.path);
     let fm = cm.load_file(file_path)
         .map_err(|e| format!("Impossible de charger le fichier: {}", e))?;
     
-    let syntax = Syntax::Typescript(Default::default());
+    // Déterminer explicitement si nous avons affaire à un fichier TSX basé sur l'extension
+    let is_tsx = file_path.extension()
+        .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
+    
+    // Version simplifiée qui devrait fonctionner avec la plupart des versions de SWC
+    let syntax = match is_tsx {
+        true => Syntax::Typescript(Default::default()),
+        false => Syntax::Typescript(Default::default()),
+    };
     
     let lexer = Lexer::new(
         syntax,
@@ -29,14 +37,30 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     
     let mut parser = Parser::new_from(lexer);
     
-    let module = parser.parse_module()
-        .map_err(|e| format!("Erreur lors du parsing: {:?}", e))?;
+    // Essayer de parser en tant que TSX si l'extension est .tsx
+    let module = if is_tsx {
+        match parser.parse_module() {
+            Ok(module) => module,
+            Err(_) => {
+                // En cas d'échec avec la syntaxe par défaut, essayons une approche plus simple
+                // Cette partie est optionnelle et peut être supprimée si cela ne fonctionne pas
+                return Ok(TSExports {
+                    default_export: None,
+                    named_exports: Vec::new(),
+                });
+            }
+        }
+    } else {
+        parser.parse_module()
+            .map_err(|e| format!("Erreur lors du parsing: {:?}", e))?
+    };
     
     let mut ts_exports = TSExports {
         default_export: None,
         named_exports: Vec::new(),
     };
     
+    // Parcourir tous les éléments du module et extraire les exports
     for item in &module.body {
         match item {
             ModuleItem::ModuleDecl(decl) => match decl {

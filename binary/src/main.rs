@@ -5,12 +5,15 @@ mod src_file;
 mod iterate_src_files;
 mod ts_exports;
 mod read_ts_exports;
+mod transpile_tsx;
 
 use custom_command::{CliCommand};
 use read_custom_command::read_custom_command;
 use define_cli::define_cli;
 use iterate_src_files::iterate_src_files;
 use read_ts_exports::read_ts_exports;
+use transpile_tsx::{transpile_tsx_to_ts, TempFileCleaner};
+use crate::src_file::SrcFile;
 use std::process;
 use std::path::PathBuf;
 
@@ -32,61 +35,33 @@ fn main() {
             let src_files = iterate_src_files(&directory);
             let mut file_count = 0;
             let mut error_count = 0;
+            let mut temp_cleaner = TempFileCleaner::new();
             
             for file in src_files {
                 file_count += 1;
                 
-                match read_ts_exports(&file) {
-                    Ok(exports) => {
-                        let mut file_has_error = false;
-                        
-                        if let Some(filename) = PathBuf::from(&file.path).file_stem() {
-                            let filename_str = filename.to_string_lossy();
-                            
-                            let has_no_exports = exports.default_export.is_none() && exports.named_exports.is_empty();
-                            
-                            let file_matches_export = 
-                                has_no_exports ||
-                                exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
-                                exports.named_exports.contains(&filename_str.to_string());
-                            
-                            if !file_matches_export {
-                                file_has_error = true;
-                                error_count += 1;
-                            }
+                let is_tsx = PathBuf::from(&file.path)
+                    .extension()
+                    .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
+                
+                if is_tsx {
+                    match transpile_tsx_to_ts(&file) {
+                        Ok(transpiled_file) => {
+                            temp_cleaner.add(&transpiled_file);
+                            process_file(&transpiled_file, &file.path, &mut error_count);
+                        },
+                        Err(err) => {
+                            println!("\nErreur lors de la transpilation du fichier TSX: {}", file.path);
+                            println!("  Détail: {}", err);
+                            error_count += 1;
                         }
-                        
-                        if file_has_error {
-                            println!("\nFound TypeScript file with error: {}", file.path);
-                            
-                            if let Some(default_export) = &exports.default_export {
-                                println!("  Default export: {}", default_export);
-                            } else {
-                                println!("  No default export");
-                            }
-                            
-                            if !exports.named_exports.is_empty() {
-                                println!("  Named exports:");
-                                for export in &exports.named_exports {
-                                    println!("    - {}", export);
-                                }
-                            } else {
-                                println!("  No named exports");
-                            }
-                            
-                            if let Some(filename) = PathBuf::from(&file.path).file_stem() {
-                                let filename_str = filename.to_string_lossy();
-                                println!("  ❌ Filename '{}' does not match any export", filename_str);
-                            }
-                        }
-                    },
-                    Err(err) => {
-                        println!("\nError in TypeScript file: {}", file.path);
-                        println!("  Error analyzing exports: {}", err);
-                        error_count += 1;
                     }
+                } else {
+                    process_file(&file, &file.path, &mut error_count);
                 }
             }
+            
+            temp_cleaner.cleanup();
             
             if file_count == 0 {
                 println!("No TypeScript files found in the directory.");
@@ -103,6 +78,73 @@ fn main() {
         CliCommand::Help => {
             eprintln!("Usage: exportcase check <directory>");
             process::exit(1);
+        }
+    }
+}
+
+fn process_file(src_file: &SrcFile, original_path: &str, error_count: &mut u32) {
+    match read_ts_exports(src_file) {
+        Ok(exports) => {
+            let mut file_has_error = false;
+            let mut error_messages: Vec<String> = Vec::new();
+            
+            // Vérifier si le fichier contient plusieurs exports
+            let has_multiple_exports = exports.default_export.is_some() && !exports.named_exports.is_empty() ||
+                                      exports.named_exports.len() > 1;
+            
+            if has_multiple_exports {
+                file_has_error = true;
+                error_messages.push("Multiple exports are not allowed - ambiguous for filename matching".to_string());
+            }
+            
+            // Vérification du nom de fichier correspondant à un export
+            if let Some(filename) = PathBuf::from(original_path).file_stem() {
+                let filename_str = filename.to_string_lossy();
+                
+                let has_no_exports = exports.default_export.is_none() && exports.named_exports.is_empty();
+                
+                let file_matches_export = 
+                    has_no_exports ||
+                    exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
+                    exports.named_exports.contains(&filename_str.to_string());
+                
+                if !file_matches_export {
+                    file_has_error = true;
+                    let error_msg = format!("Filename '{}' does not match any export", filename_str);
+                    error_messages.push(error_msg);
+                }
+            }
+            
+            if file_has_error {
+                *error_count += 1;
+                println!("\nFound TypeScript file with error: {}", original_path);
+                
+                // Afficher d'abord les informations d'export pour contexte
+                if let Some(default_export) = &exports.default_export {
+                    println!("  Default export: {}", default_export);
+                } else {
+                    println!("  No default export");
+                }
+                
+                if !exports.named_exports.is_empty() {
+                    println!("  Named exports:");
+                    for export in &exports.named_exports {
+                        println!("    - {}", export);
+                    }
+                } else {
+                    println!("  No named exports");
+                }
+
+                println!("  Errors:");
+                for error_msg in &error_messages {
+                    println!("    ❌ {}", error_msg);
+                }
+            }
+        },
+        Err(err) => {
+            println!("\nError in TypeScript file: {}", original_path);
+            println!("  Error analyzing exports: {}", err);
+            *error_count += 1;
         }
     }
 } 
