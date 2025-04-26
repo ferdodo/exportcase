@@ -19,7 +19,7 @@ pub fn iterate_src_files(directory: &str) -> impl Iterator<Item = SrcFile> {
 fn is_typescript_file(path: &Path) -> bool {
     if let Some(extension) = path.extension() {
         let ext = extension.to_string_lossy().to_lowercase();
-        return ext == "ts";
+        return ext == "ts" || ext == "tsx";
     }
     false
 }

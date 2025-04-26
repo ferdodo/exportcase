@@ -43,7 +43,10 @@ fn main() {
                         if let Some(filename) = PathBuf::from(&file.path).file_stem() {
                             let filename_str = filename.to_string_lossy();
                             
+                            let has_no_exports = exports.default_export.is_none() && exports.named_exports.is_empty();
+                            
                             let file_matches_export = 
+                                has_no_exports ||
                                 exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
                                 exports.named_exports.contains(&filename_str.to_string());
                             

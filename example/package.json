@@ -1,0 +1,12 @@
+{
+	"name": "exportcase-example",
+	"scripts": {
+		"build": "tsc --noEmit && exportcase check src"
+	},
+	"devDependencies": {
+		"@types/react": "^19.1.2",
+		"exportcase": "file:../package",
+		"react": "^19.1.0",
+		"typescript": "^5.8.3"
+	}
+}
