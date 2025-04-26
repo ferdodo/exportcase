@@ -6,7 +6,7 @@ use swc_common::sync::Lrc;
 use swc_common::SourceMap;
 use swc_ecma_ast::{
     Decl, DefaultDecl, ExportDecl, ExportDefaultDecl, ExportDefaultExpr, ExportSpecifier,
-    ModuleDecl, ModuleItem, 
+    ModuleDecl, ModuleItem,
 };
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 
@@ -52,7 +52,11 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                                 ts_exports.default_export = Some(ident.sym.to_string());
                             }
                         },
-                        _ => {},
+                        // Cas spécial pour les interfaces par défaut dans version courante de SWC
+                        _ => {
+                            // Pour les versions de SWC qui ne supportent pas directement DefaultDecl::TsInterfaceDecl
+                            // On peut essayer d'extraire le nom via d'autres méthodes si nécessaire
+                        },
                     }
                 },
                 
@@ -62,6 +66,8 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                     }
                 },
                 
+                // Export de déclarations nommées (ex: export const myFunc = ...)
+                // Inclut également les exports de type comme: export interface X, export type Y, export enum Z
                 ModuleDecl::ExportDecl(ExportDecl { decl, .. }) => match decl {
                     Decl::Class(class_decl) => {
                         ts_exports.named_exports.push(class_decl.ident.sym.to_string());
@@ -76,15 +82,38 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                             }
                         }
                     },
+                    // Export d'interface TypeScript
+                    Decl::TsInterface(ts_interface) => {
+                        ts_exports.named_exports.push(ts_interface.id.sym.to_string());
+                    },
+                    // Export de type TypeScript
+                    Decl::TsTypeAlias(ts_type) => {
+                        ts_exports.named_exports.push(ts_type.id.sym.to_string());
+                    },
+                    // Export d'enum TypeScript
+                    Decl::TsEnum(ts_enum) => {
+                        ts_exports.named_exports.push(ts_enum.id.sym.to_string());
+                    },
+                    // Export de module TypeScript
+                    Decl::TsModule(ts_module) => {
+                        if let swc_ecma_ast::TsModuleName::Ident(ident) = &ts_module.id {
+                            ts_exports.named_exports.push(ident.sym.to_string());
+                        }
+                    },
                     _ => {},
                 },
                 
+                // Export de noms spécifiques (ex: export { myFunc, MyComponent })
+                // Inclut également les exports de types comme: export type { X, Y }
                 ModuleDecl::ExportNamed(named_export) => {
+                    // Vérifier si c'est un export de type (export type { ... })
+                    let _is_type_export = named_export.type_only;
+                    
+                    // Traiter tous les spécificateurs de manière uniforme
                     for spec in &named_export.specifiers {
                         if let ExportSpecifier::Named(named_spec) = spec {
                             let export_name = match &named_spec.exported {
                                 Some(exported_name) => match exported_name {
-                                    // Dans les nouvelles versions, ModuleExportName est une enum
                                     swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
                                     swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
                                 },
