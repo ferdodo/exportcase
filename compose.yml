@@ -1,7 +1,15 @@
 services:
+
+  binary-prebuild:
+    build:
+      context: ./binary
+      target: binary-prebuild
+
   binary:
     build:
       context: ./binary
+    depends_on:
+      - binary-prebuild
 
   package:
     build:
