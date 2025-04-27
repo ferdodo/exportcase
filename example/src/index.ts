@@ -1,3 +1,3 @@
 export * from "./greet";
-export * from "./speak";
-export * from "./talk";
+export * from "./Speak";
+export * from "./Talk";

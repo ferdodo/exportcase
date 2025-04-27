@@ -1,5 +1,3 @@
-export * from "./speak";
-
-export function greeto(name: string) {
+export function greet(name: string) {
 	return `Hello, ${name}!`;
 }

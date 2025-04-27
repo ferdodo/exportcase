@@ -76,12 +76,14 @@ fn main() {
                                             exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
                                             exports.named_exports.contains(&filename_str.to_string());
                                         
-                                        // Si le fichier contient une réexportation "*", on pourrait avoir une logique spéciale
+                                        // Vérification si le fichier contient un export * et n'est pas un fichier index
                                         if exports.has_star_export {
-                                            // Les exports "*" sont souvent utilisés pour les fichiers index qui regroupent des exports
-                                            // Donc on pourrait être moins strict sur le nom du fichier
                                             let is_index_file = filename_str == "index";
-                                            if is_index_file {
+                                            
+                                            if !is_index_file {
+                                                file_has_error = true;
+                                                error_messages.push("Star export (export * from) is only allowed in index files".to_string());
+                                            } else {
                                                 // Les fichiers index avec "export * from" sont OK
                                                 file_matches_export = true;
                                             }
@@ -162,12 +164,14 @@ fn main() {
                                     exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
                                     exports.named_exports.contains(&filename_str.to_string());
                                 
-                                // Si le fichier contient une réexportation "*", on pourrait avoir une logique spéciale
+                                // Vérification si le fichier contient un export * et n'est pas un fichier index
                                 if exports.has_star_export {
-                                    // Les exports "*" sont souvent utilisés pour les fichiers index qui regroupent des exports
-                                    // Donc on pourrait être moins strict sur le nom du fichier
                                     let is_index_file = filename_str == "index";
-                                    if is_index_file {
+                                    
+                                    if !is_index_file {
+                                        file_has_error = true;
+                                        error_messages.push("Star export (export * from) is only allowed in index files".to_string());
+                                    } else {
                                         // Les fichiers index avec "export * from" sont OK
                                         file_matches_export = true;
                                     }

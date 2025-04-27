@@ -1,6 +1,6 @@
 import React from "react";
 
-export function helle() {
+export function hello() {
 	const count = 3;
 
 	return (
