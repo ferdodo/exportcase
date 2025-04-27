@@ -2,6 +2,8 @@
 
 Opinionated file name validator for TypeScript.
 
+![Preview](preview.gif)
+
 ## Features
 
 - Enforces strict file name conventions based on exported content
