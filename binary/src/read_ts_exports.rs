@@ -47,6 +47,8 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                 return Ok(TSExports {
                     default_export: None,
                     named_exports: Vec::new(),
+                    has_star_export: false,
+                    reexport_sources: Vec::new(),
                 });
             }
         }
@@ -58,6 +60,8 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     let mut ts_exports = TSExports {
         default_export: None,
         named_exports: Vec::new(),
+        has_star_export: false,
+        reexport_sources: Vec::new(),
     };
     
     // Parcourir tous les éléments du module et extraire les exports
@@ -118,23 +122,58 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                 },
                 
                 ModuleDecl::ExportNamed(named_export) => {
-                    let _is_type_export = named_export.type_only;
-                    
-                    for spec in &named_export.specifiers {
-                        if let ExportSpecifier::Named(named_spec) = spec {
-                            let export_name = match &named_spec.exported {
-                                Some(exported_name) => match exported_name {
-                                    swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
-                                    swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
-                                },
-                                None => match &named_spec.orig {
-                                    swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
-                                    swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
-                                },
-                            };
-                            ts_exports.named_exports.push(export_name);
+                    if named_export.src.is_some() {
+                        if let Some(src) = &named_export.src {
+                            let source_path = src.value.to_string();
+                            
+                            // Ajouter la source à la liste des sources de réexportation
+                            ts_exports.reexport_sources.push(source_path.clone());
+                            
+                            println!("Found export from: {}", source_path);
+                            
+                            for spec in &named_export.specifiers {
+                                if let ExportSpecifier::Named(named_spec) = spec {
+                                    let export_name = match &named_spec.exported {
+                                        Some(exported_name) => match exported_name {
+                                            swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
+                                            swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
+                                        },
+                                        None => match &named_spec.orig {
+                                            swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
+                                            swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
+                                        },
+                                    };
+                                    
+                                    ts_exports.named_exports.push(export_name);
+                                }
+                            }
+                        }
+                    } else {
+                        for spec in &named_export.specifiers {
+                            if let ExportSpecifier::Named(named_spec) = spec {
+                                let export_name = match &named_spec.exported {
+                                    Some(exported_name) => match exported_name {
+                                        swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
+                                        swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
+                                    },
+                                    None => match &named_spec.orig {
+                                        swc_ecma_ast::ModuleExportName::Ident(ident) => ident.sym.to_string(),
+                                        swc_ecma_ast::ModuleExportName::Str(str) => str.value.to_string(),
+                                    },
+                                };
+                                
+                                ts_exports.named_exports.push(export_name);
+                            }
                         }
                     }
+                },
+                
+                ModuleDecl::ExportAll(export_all) => {
+                    let source_path = export_all.src.value.to_string();
+                    
+                    // Ajouter à la liste des sources de réexportation
+                    ts_exports.reexport_sources.push(source_path);
+                    ts_exports.has_star_export = true;
                 },
                 
                 _ => {},

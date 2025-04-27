@@ -13,7 +13,6 @@ use define_cli::define_cli;
 use iterate_src_files::iterate_src_files;
 use read_ts_exports::read_ts_exports;
 use transpile_tsx::{transpile_tsx_to_ts, TempFileCleaner};
-use crate::src_file::SrcFile;
 use std::process;
 use std::path::PathBuf;
 
@@ -44,7 +43,6 @@ fn main() {
                     .extension()
                     .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
                 
-                // Traitement des fichiers TSX
                 if is_tsx {
                     match transpile_tsx_to_ts(&file) {
                         Ok(transpiled_file) => {
@@ -69,12 +67,25 @@ fn main() {
                                     if let Some(filename) = PathBuf::from(&file.path).file_stem() {
                                         let filename_str = filename.to_string_lossy();
                                         
-                                        let has_no_exports = exports.default_export.is_none() && exports.named_exports.is_empty();
+                                        let has_no_exports = exports.default_export.is_none() && 
+                                                             exports.named_exports.is_empty() && 
+                                                             !exports.has_star_export;
                                         
-                                        let file_matches_export = 
+                                        let mut file_matches_export = 
                                             has_no_exports ||
                                             exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
                                             exports.named_exports.contains(&filename_str.to_string());
+                                        
+                                        // Si le fichier contient une réexportation "*", on pourrait avoir une logique spéciale
+                                        if exports.has_star_export {
+                                            // Les exports "*" sont souvent utilisés pour les fichiers index qui regroupent des exports
+                                            // Donc on pourrait être moins strict sur le nom du fichier
+                                            let is_index_file = filename_str == "index";
+                                            if is_index_file {
+                                                // Les fichiers index avec "export * from" sont OK
+                                                file_matches_export = true;
+                                            }
+                                        }
                                         
                                         if !file_matches_export {
                                             file_has_error = true;
@@ -142,12 +153,25 @@ fn main() {
                             if let Some(filename) = PathBuf::from(&file.path).file_stem() {
                                 let filename_str = filename.to_string_lossy();
                                 
-                                let has_no_exports = exports.default_export.is_none() && exports.named_exports.is_empty();
+                                let has_no_exports = exports.default_export.is_none() && 
+                                                     exports.named_exports.is_empty() && 
+                                                     !exports.has_star_export;
                                 
-                                let file_matches_export = 
+                                let mut file_matches_export = 
                                     has_no_exports ||
                                     exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
                                     exports.named_exports.contains(&filename_str.to_string());
+                                
+                                // Si le fichier contient une réexportation "*", on pourrait avoir une logique spéciale
+                                if exports.has_star_export {
+                                    // Les exports "*" sont souvent utilisés pour les fichiers index qui regroupent des exports
+                                    // Donc on pourrait être moins strict sur le nom du fichier
+                                    let is_index_file = filename_str == "index";
+                                    if is_index_file {
+                                        // Les fichiers index avec "export * from" sont OK
+                                        file_matches_export = true;
+                                    }
+                                }
                                 
                                 if !file_matches_export {
                                     file_has_error = true;
@@ -174,6 +198,19 @@ fn main() {
                                     }
                                 } else {
                                     println!("  No named exports");
+                                }
+                                
+                                // Vous pourriez aussi vouloir afficher des informations sur les réexportations
+                                if !exports.reexport_sources.is_empty() {
+                                    println!("  Re-exports from:");
+                                    for source in &exports.reexport_sources {
+                                        println!("    - {}", source);
+                                    }
+                                }
+                                
+                                // Si le fichier a un export "*", mentionnez-le
+                                if exports.has_star_export {
+                                    println!("  Has star export (export * from '...')");
                                 }
                                 
                                 println!("  Errors:");
