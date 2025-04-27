@@ -2,7 +2,7 @@
 
 Opinionated file name validator for TypeScript.
 
-![Preview](preview.gif)
+![Preview](website/public/preview.gif)
 
 ## Features
 
