@@ -42,7 +42,6 @@ fn main() {
                     .extension()
                     .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
                 
-                // Utiliser la fonction appropriée selon le type de fichier
                 let exports_result = if is_tsx {
                     read_tsx_exports(&file)
                 } else {
@@ -54,7 +53,6 @@ fn main() {
                         let mut file_has_error = false;
                         let mut error_messages: Vec<String> = Vec::new();
                         
-                        // Vérifier si le fichier contient plusieurs exports
                         let has_multiple_exports = exports.default_export.is_some() && !exports.named_exports.is_empty() ||
                                                   exports.named_exports.len() > 1;
                         
@@ -76,7 +74,6 @@ fn main() {
                                 exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
                                 exports.named_exports.contains(&filename_str.to_string());
                             
-                            // Vérification si le fichier contient un export * et n'est pas un fichier index
                             if exports.has_star_export {
                                 let is_index_file = filename_str == "index";
                                 
@@ -84,7 +81,6 @@ fn main() {
                                     file_has_error = true;
                                     error_messages.push("Star export (export * from) is only allowed in index files".to_string());
                                 } else {
-                                    // Les fichiers index avec "export * from" sont OK
                                     file_matches_export = true;
                                 }
                             }
@@ -100,7 +96,6 @@ fn main() {
                             error_count += 1;
                             println!("\nFound TypeScript file with error: {}", file.path);
                             
-                            // Afficher d'abord les informations d'export pour contexte
                             if let Some(default_export) = &exports.default_export {
                                 println!("  Default export: {}", default_export);
                             } else {
@@ -116,7 +111,6 @@ fn main() {
                                 println!("  No named exports");
                             }
                             
-                            // Afficher les informations sur les réexportations
                             if !exports.reexport_sources.is_empty() {
                                 println!("  Re-exports from:");
                                 for source in &exports.reexport_sources {
@@ -124,9 +118,8 @@ fn main() {
                                 }
                             }
                             
-                            // Si le fichier a un export "*", mentionnez-le
                             if exports.has_star_export {
-                                println!("  Has star export (export * from '...')");
+                                println!("  Has star export (export * from)");
                             }
                             
                             println!("  Errors:");

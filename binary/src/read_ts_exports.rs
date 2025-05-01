@@ -16,13 +16,11 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     
     let file_path = Path::new(&src_file.path);
     let fm = cm.load_file(file_path)
-        .map_err(|e| format!("Impossible de charger le fichier: {}", e))?;
+        .map_err(|e| format!("Could not load file: {}", e))?;
     
-    // Déterminer explicitement si nous avons affaire à un fichier TSX basé sur l'extension
     let is_tsx = file_path.extension()
         .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
     
-    // Version simplifiée qui devrait fonctionner avec la plupart des versions de SWC
     let syntax = match is_tsx {
         true => Syntax::Typescript(Default::default()),
         false => Syntax::Typescript(Default::default()),
@@ -37,13 +35,10 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     
     let mut parser = Parser::new_from(lexer);
     
-    // Essayer de parser en tant que TSX si l'extension est .tsx
     let module = if is_tsx {
         match parser.parse_module() {
             Ok(module) => module,
             Err(_) => {
-                // En cas d'échec avec la syntaxe par défaut, essayons une approche plus simple
-                // Cette partie est optionnelle et peut être supprimée si cela ne fonctionne pas
                 return Ok(TSExports {
                     default_export: None,
                     named_exports: Vec::new(),
@@ -54,7 +49,7 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
         }
     } else {
         parser.parse_module()
-            .map_err(|e| format!("Erreur lors du parsing: {:?}", e))?
+            .map_err(|e| format!("Error during parsing: {:?}", e))?
     };
     
     let mut ts_exports = TSExports {
@@ -64,7 +59,6 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
         reexport_sources: Vec::new(),
     };
     
-    // Parcourir tous les éléments du module et extraire les exports
     for item in &module.body {
         match item {
             ModuleItem::ModuleDecl(decl) => match decl {
@@ -125,8 +119,6 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                     if named_export.src.is_some() {
                         if let Some(src) = &named_export.src {
                             let source_path = src.value.to_string();
-                            
-                            // Ajouter la source à la liste des sources de réexportation
                             ts_exports.reexport_sources.push(source_path.clone());
                             
                             println!("Found export from: {}", source_path);
@@ -170,15 +162,12 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                 
                 ModuleDecl::ExportAll(export_all) => {
                     let source_path = export_all.src.value.to_string();
-                    
-                    // Ajouter à la liste des sources de réexportation
                     ts_exports.reexport_sources.push(source_path);
                     ts_exports.has_star_export = true;
                 },
                 
                 _ => {},
             },
-            
             _ => {},
         }
     }

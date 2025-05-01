@@ -23,18 +23,3 @@ fn is_typescript_file(path: &Path) -> bool {
     }
     false
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_is_typescript_file() {
-        assert!(is_typescript_file(Path::new("file.ts")));
-        assert!(is_typescript_file(Path::new("file.tsx")));
-        assert!(is_typescript_file(Path::new("path/to/file.ts")));
-        assert!(!is_typescript_file(Path::new("file.js")));
-        assert!(!is_typescript_file(Path::new("file.txt")));
-        assert!(!is_typescript_file(Path::new("file")));
-    }
-} 

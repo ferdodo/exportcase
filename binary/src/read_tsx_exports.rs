@@ -10,30 +10,25 @@ use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 use swc_ecma_ast::{ModuleDecl, ModuleItem, DefaultDecl, ExportSpecifier};
 
 pub fn read_tsx_exports(src_file: &SrcFile) -> Result<TSExports, String> {
-    // Vérifier si le fichier est vraiment un TSX
     let path = Path::new(&src_file.path);
     let is_tsx = path.extension()
         .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
     
     if !is_tsx {
-        return Err("Le fichier n'est pas un fichier TSX".to_string());
+        return Err("Not a TSX file".to_string());
     }
     
-    // Lire le contenu du fichier TSX
     let tsx_content = fs::read_to_string(&src_file.path)
-        .map_err(|e| format!("Impossible de lire le fichier TSX: {}", e))?;
+        .map_err(|e| format!("Could not read TSX file: {}", e))?;
     
-    // Initialiser le source map et le handler
     let cm: Lrc<SourceMap> = Default::default();
     let _handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
     
-    // Créer un nouveau fichier source
     let fm = cm.new_source_file(
         FileName::Custom(src_file.path.clone()).into(),
         tsx_content,
     );
     
-    // Configurer pour le parsing TSX
     let mut ts_config = Default::default();
     let syntax = if let Syntax::Typescript(ref mut config) = Syntax::Typescript(ts_config) {
         config.tsx = true;
@@ -51,13 +46,11 @@ pub fn read_tsx_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     
     let mut parser = Parser::new_from(lexer);
     
-    // Parser le module
     let module = parser.parse_module()
-        .map_err(|e| format!("Erreur lors du parsing du fichier TSX '{}': {:?}", src_file.path, e))?;
+        .map_err(|e| format!("Error parsing TSX file '{}': {:?}", src_file.path, e))?;
     
     let mut ts_exports = TSExports::new();
     
-    // Parcourir l'AST et extraire les exports
     for item in &module.body {
         if let ModuleItem::ModuleDecl(decl) = item {
             match decl {
