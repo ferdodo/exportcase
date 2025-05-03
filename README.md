@@ -9,7 +9,8 @@ Opinionated file name validator for TypeScript.
 
 ## Features
 
-- Enforces strict file name conventions based on ESM exports.
+- Enforces typescript file name based on ESM exports.
+- Support TSX files.
 - Zero config.
 
 ## Installation
@@ -20,8 +21,6 @@ npm install --save-dev exportcase
 
 ## Usage
 
-### Command Line
-
 ```bash
 exportcase check ./src
 ```
@@ -30,7 +29,4 @@ exportcase check ./src
 
 - **One named export per file**: Each file must have at most one named export.
 - **File name must match the export**: The file name (without extension) must match the name of the single named export or the default export.
-- **Star exports are only allowed in index files**: `export * from ...` is only allowed in files named `index.ts` or `index.tsx`.
-
-Files with no exports are allowed, but will not be matched against any export.
-
+- **Star exports are only allowed in index files**: `export * from ...` is only allowed in files named `index.ts`.
