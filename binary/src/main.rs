@@ -6,6 +6,10 @@ mod iterate_src_files;
 mod ts_exports;
 mod read_ts_exports;
 mod read_tsx_exports;
+mod rule_single_named_export;
+mod rule_result;
+mod rule_star_export_index;
+mod rule_filename_matches_export;
 
 use custom_command::{CliCommand};
 use read_custom_command::read_custom_command;
@@ -13,8 +17,10 @@ use define_cli::define_cli;
 use iterate_src_files::iterate_src_files;
 use read_ts_exports::read_ts_exports;
 use read_tsx_exports::read_tsx_exports;
+use rule_single_named_export::rule_single_named_export;
+use rule_star_export_index::rule_star_export_index;
+use rule_filename_matches_export::rule_filename_matches_export;
 use std::process;
-use std::path::PathBuf;
 
 fn main() {
     let cli_command = define_cli();
@@ -22,14 +28,7 @@ fn main() {
     
     match args.command {
         CliCommand::Check { directory } => {
-            let path = PathBuf::from(&directory);
-            
-            if !path.exists() {
-                eprintln!("Error: Path '{}' does not exist", path.display());
-                process::exit(1);
-            }
-            
-            println!("Checking TypeScript files in: {}", path.display());
+            println!("Checking TypeScript files in: {}", &directory);
             
             let src_files = iterate_src_files(&directory);
             let mut file_count = 0;
@@ -38,9 +37,7 @@ fn main() {
             for file in src_files {
                 file_count += 1;
                 
-                let is_tsx = PathBuf::from(&file.path)
-                    .extension()
-                    .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
+                let is_tsx = file.path.to_lowercase().ends_with(".tsx");
                 
                 let exports_result = if is_tsx {
                     read_tsx_exports(&file)
@@ -53,42 +50,16 @@ fn main() {
                         let mut file_has_error = false;
                         let mut error_messages: Vec<String> = Vec::new();
                         
-                        let has_multiple_exports = exports.default_export.is_some() && !exports.named_exports.is_empty() ||
-                                                  exports.named_exports.len() > 1;
+                        let rules = [
+                            rule_single_named_export(&exports, &file),
+                            rule_star_export_index(&exports, &file),
+                            rule_filename_matches_export(&exports, &file),
+                        ];
                         
-                        if has_multiple_exports {
-                            file_has_error = true;
-                            error_messages.push("Multiple exports are not allowed - ambiguous for filename matching".to_string());
-                        }
-                        
-                        // Vérification du nom de fichier correspondant à un export
-                        if let Some(filename) = PathBuf::from(&file.path).file_stem() {
-                            let filename_str = filename.to_string_lossy();
-                            
-                            let has_no_exports = exports.default_export.is_none() && 
-                                                 exports.named_exports.is_empty() && 
-                                                 !exports.has_star_export;
-                            
-                            let mut file_matches_export = 
-                                has_no_exports ||
-                                exports.default_export.as_ref().map_or(false, |def| def == &filename_str) ||
-                                exports.named_exports.contains(&filename_str.to_string());
-                            
-                            if exports.has_star_export {
-                                let is_index_file = filename_str == "index";
-                                
-                                if !is_index_file {
-                                    file_has_error = true;
-                                    error_messages.push("Star export (export * from) is only allowed in index files".to_string());
-                                } else {
-                                    file_matches_export = true;
-                                }
-                            }
-                            
-                            if !file_matches_export {
+                        for rule in &rules {
+                            if let crate::rule_result::RuleResult::Error(msgs) = rule {
                                 file_has_error = true;
-                                let error_msg = format!("Filename '{}' does not match any export", filename_str);
-                                error_messages.push(error_msg);
+                                error_messages.extend(msgs.clone());
                             }
                         }
                         
