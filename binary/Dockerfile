@@ -9,5 +9,5 @@ RUN cargo build --release
 FROM exportcase-binary-prebuild
 COPY . .
 RUN cargo test
+RUN touch src/main.rs
 RUN cargo build --release
-RUN cp target/release/exportcase /usr/local/bin/

@@ -1,6 +1,6 @@
 [package]
 name = "exportcase"
-version = "0.9.0"
+version = "0.10.0"
 edition = "2021"
 authors = ["Developer <dev@example.com>"]
 description = "Opinionated naming convention validator for JS/TS modules"
