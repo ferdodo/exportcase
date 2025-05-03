@@ -37,8 +37,10 @@
 					<h2> Rules </h2>
 
 					<ul>
-						<li> One named export per file </li>
-						<li> File name should match the named export </li>
+						<li>At most one named export per file</li>
+						<li>File name must match the named export or default export</li>
+						<li>Star exports (<code>export * from ...</code>) are only allowed in <code>index.ts</code> or <code>index.tsx</code> files</li>
+						<li>Files with no exports are allowed</li>
 					</ul>
 
 					<h2> Installation </h2>
