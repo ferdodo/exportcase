@@ -1,13 +1,16 @@
 # exportcase
 
-Opinionated file name validator for TypeScript.
+[![Npm package](https://img.shields.io/npm/v/exportcase.svg)](https://www.npmjs.com/package/exportcase)
+[![npm](https://img.shields.io/npm/dw/exportcase)](https://www.npmjs.com/package/exportcase)
+![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/exportcase)
+[![npm](https://img.shields.io/badge/website-🌐-blue)](https://ferdodo.github.io/exportcase)
 
-![Preview](website/public/preview.gif)
+Opinionated file name validator for TypeScript.
 
 ## Features
 
-- Enforces strict file name conventions based on exported content
-- Provides clear error messages with suggestions for correct naming
+- Enforces strict file name conventions based on ESM exports.
+- Zero config.
 
 ## Installation
 
@@ -25,6 +28,9 @@ exportcase check ./src
 
 ## Validation Rules
 
-exportcase enforces the following naming convention:
+- **One named export per file**: Each file must have at most one named export.
+- **File name must match the export**: The file name (without extension) must match the name of the single named export or the default export.
+- **Star exports are only allowed in index files**: `export * from ...` is only allowed in files named `index.ts` or `index.tsx`.
 
-- File names must exactly match the name of the single named export
+Files with no exports are allowed, but will not be matched against any export.
+
