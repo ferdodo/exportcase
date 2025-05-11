@@ -56,27 +56,25 @@
 					<h2> Installation </h2>
 
 				</ec-typography>
-				<crumbs-panel>
-					<pre> $ npm install exportcase </pre>
-				</crumbs-panel>
+
+				<ec-code>$ npm install exportcase</ec-code>
+
 				<ec-typography>
+					<h2> Usage </h2>
+				</ec-typography>
 
-				<h2> Usage </h2>
-			</ec-typography>
+				<ec-code>$ npx exportcase check ./src
 
-				<crumbs-panel>
-					<pre> $ npx exportcase check ./src </pre>
-					<pre> </pre>
-					<pre> Checking TypeScript files in: src </pre>
-					<pre> </pre>
-					<pre> Found TypeScript file with error: src/generate-id.ts </pre>
-					<pre>    No default export </pre>
-					<pre>    Named exports: </pre>
-					<pre>     - generateUUID </pre>
-					<pre>   ❌ Filename 'generate-id' does not match any export </pre>
-					<pre> </pre>
-					<pre> ❌ Found 1 files with naming convention errors </pre>
-				</crumbs-panel>
+Checking TypeScript files in: src
+
+Found TypeScript file with error: src/generate-id.ts
+  No default export
+  Named exports:
+    - generateUUID
+  Errors:
+    ❌ Filename 'generate-id' does not match any export
+
+❌ Found 1 files with naming convention errors</ec-code>
 
 				<div style="display: flex; place-content: center; gap: 5rem; margin-top: 4rem; height: 5rem;">
 					<a href="https://github.com/ferdodo/exportcase" target="_blank" style="width: 5rem">
