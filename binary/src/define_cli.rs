@@ -14,5 +14,15 @@ pub fn define_cli() -> Command {
                         .index(1)
                 )
         )
+        .subcommand(
+            Command::new("format")
+                .about("Generate a bash script to rename files according to their exports")
+                .arg(
+                    Arg::new("directory")
+                        .help("Directory containing TypeScript files to format")
+                        .required(true)
+                        .index(1)
+                )
+        )
         .arg_required_else_help(true)
 } 

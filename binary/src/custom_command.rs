@@ -2,7 +2,9 @@ pub enum CliCommand {
     Check {
         directory: String,
     },
-    Help,
+    Format {
+        directory: String,
+    },
 }
 
 pub struct CustomCommand {

@@ -1,20 +1,19 @@
-use crate::custom_command::{CustomCommand, CliCommand};
 use clap::Command;
+use crate::custom_command::{CliCommand, CustomCommand};
 
-pub fn read_custom_command(command: Command) -> CustomCommand {
-    let matches = command.get_matches();
+pub fn read_custom_command(cli_command: Command) -> CustomCommand {
+    let matches = cli_command.get_matches();
     
-    if let Some(check_matches) = matches.subcommand_matches("check") {
-        if let Some(directory) = check_matches.get_one::<String>("directory") {
-            return CustomCommand {
-                command: CliCommand::Check {
-                    directory: directory.clone(),
-                },
-            };
-        }
-    }
+    let (command, sub_matches) = matches.subcommand().expect("A subcommand is required");
+    let directory = sub_matches.get_one::<String>("directory")
+        .expect("Directory is required")
+        .to_string();
     
-    CustomCommand {
-        command: CliCommand::Help,
-    }
+    let command = match command {
+        "check" => CliCommand::Check { directory },
+        "format" => CliCommand::Format { directory },
+        _ => unreachable!("Clap should have handled invalid commands"),
+    };
+    
+    CustomCommand { command }
 } 

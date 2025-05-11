@@ -11,12 +11,14 @@ mod rule_result;
 mod rule_star_export_index;
 mod rule_filename_matches_export;
 mod check;
+mod format;
 
 use custom_command::CliCommand;
 use read_custom_command::read_custom_command;
 use define_cli::define_cli;
 use std::process;
 use check::check_command;
+use format::format_command;
 
 fn main() {
     let cli_command = define_cli();
@@ -26,9 +28,8 @@ fn main() {
         CliCommand::Check { directory } => {
             check_command(directory);
         },
-        CliCommand::Help => {
-            eprintln!("Usage: exportcase check <directory>");
-            process::exit(1);
+        CliCommand::Format { directory } => {
+            format_command(directory);
         }
     }
 } 
