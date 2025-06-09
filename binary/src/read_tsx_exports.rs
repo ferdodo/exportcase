@@ -29,7 +29,7 @@ pub fn read_tsx_exports(src_file: &SrcFile) -> Result<TSExports, String> {
         tsx_content,
     );
     
-    let mut ts_config = Default::default();
+    let ts_config = Default::default();
     let syntax = if let Syntax::Typescript(ref mut config) = Syntax::Typescript(ts_config) {
         config.tsx = true;
         Syntax::Typescript(config.clone())

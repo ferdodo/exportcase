@@ -16,7 +16,6 @@ mod format;
 use custom_command::CliCommand;
 use read_custom_command::read_custom_command;
 use define_cli::define_cli;
-use std::process;
 use check::check_command;
 use format::format_command;
 

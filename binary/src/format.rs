@@ -1,6 +1,4 @@
 use crate::{
-    src_file::SrcFile,
-    ts_exports::TSExports,
     rule_filename_matches_export::rule_filename_matches_export,
     rule_single_named_export::rule_single_named_export,
     rule_star_export_index::rule_star_export_index,

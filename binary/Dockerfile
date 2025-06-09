@@ -10,4 +10,4 @@ FROM exportcase-binary-prebuild
 COPY . .
 RUN cargo test
 RUN touch src/main.rs
-RUN cargo build --release
+RUN RUSTFLAGS="-D warnings" cargo build --release
