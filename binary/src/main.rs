@@ -8,7 +8,6 @@ mod src_file_repository;
 mod file_system_src_file_repository;
 mod ts_exports;
 mod read_ts_exports;
-mod read_tsx_exports;
 mod rule_single_named_export;
 mod rule_star_export_index;
 mod rule_filename_matches_export;

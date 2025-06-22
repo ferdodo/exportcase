@@ -4,7 +4,6 @@ use crate::{
     rule_star_export_index::rule_star_export_index,
     rule_result::RuleResult,
     read_ts_exports::read_ts_exports,
-    read_tsx_exports::read_tsx_exports,
     file_system_src_file_repository::FileSystemSrcFileRepository,
     src_file_repository::SrcFileRepository
 };
@@ -24,13 +23,7 @@ pub fn format_command(directory: String) {
     for file_result in src_files {
         match file_result {
             Ok(file) => {
-                let is_tsx = file.path.to_lowercase().ends_with(".tsx");
-                
-                let exports_result = if is_tsx {
-                    read_tsx_exports(&file)
-                } else {
-                    read_ts_exports(&file)
-                };
+                let exports_result = read_ts_exports(&file);
                 
                 match exports_result {
                     Ok(exports) => {
@@ -54,6 +47,7 @@ pub fn format_command(directory: String) {
                         
                         if let RuleResult::Error(_) = rule_filename_matches_export(&exports, &file) {
                             if let Some(named_export) = exports.named_exports.first() {
+                                let is_tsx = file.path.to_lowercase().ends_with(".tsx");
                                 let new_name = format!("{}.{}", named_export, if is_tsx { "tsx" } else { "ts" });
                                 let new_path = Path::new(&file.path)
                                     .with_file_name(&new_name)

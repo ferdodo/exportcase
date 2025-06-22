@@ -42,7 +42,7 @@ mod tests {
 
     #[test]
     fn test_filename_matches_named_export() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.named_exports.push("foo".to_string());
         let src_file = SrcFile { 
             path: "foo.ts".to_string(),
@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn test_filename_matches_default_export() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.default_export = Some("bar".to_string());
         let src_file = SrcFile { 
             path: "bar.ts".to_string(),
@@ -66,7 +66,7 @@ mod tests {
 
     #[test]
     fn test_filename_does_not_match_any_export() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.named_exports.push("foo".to_string());
         let src_file = SrcFile { 
             path: "bar.ts".to_string(),
@@ -78,7 +78,7 @@ mod tests {
 
     #[test]
     fn test_index_file_with_star_export() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.has_star_export = true;
         let src_file = SrcFile { 
             path: "index.ts".to_string(),

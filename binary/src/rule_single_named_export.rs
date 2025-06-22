@@ -20,7 +20,7 @@ mod tests {
 
     #[test]
     fn test_single_named_export_ok() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.named_exports.push("Foo".to_string());
         let src_file = SrcFile { 
             path: "foo.ts".to_string(),
@@ -32,7 +32,7 @@ mod tests {
 
     #[test]
     fn test_multiple_named_exports_error() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.named_exports.push("Foo".to_string());
         ts_exports.named_exports.push("Bar".to_string());
         let src_file = SrcFile { 

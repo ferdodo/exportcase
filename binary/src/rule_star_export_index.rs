@@ -26,7 +26,7 @@ mod tests {
 
     #[test]
     fn test_star_export_in_index_file_ok() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.has_star_export = true;
         let src_file = SrcFile { 
             path: "index.ts".to_string(),
@@ -38,7 +38,7 @@ mod tests {
 
     #[test]
     fn test_star_export_in_non_index_file_error() {
-        let mut ts_exports = TSExports::new();
+        let mut ts_exports = TSExports::default();
         ts_exports.has_star_export = true;
         let src_file = SrcFile { 
             path: "foo.ts".to_string(),
@@ -50,7 +50,7 @@ mod tests {
 
     #[test]
     fn test_no_star_export_ok() {
-        let ts_exports = TSExports::new();
+        let ts_exports = TSExports::default();
         let src_file = SrcFile { 
             path: "foo.ts".to_string(),
             content: String::new()

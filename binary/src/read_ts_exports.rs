@@ -9,12 +9,7 @@ use swc_ecma_ast::{
 pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
     let module = parse_ts_file(src_file)?;
     
-    let mut ts_exports = TSExports {
-        default_export: None,
-        named_exports: Vec::new(),
-        has_star_export: false,
-        reexport_sources: Vec::new(),
-    };
+    let mut ts_exports = TSExports::default();
     
     for item in &module.body {
         match item {

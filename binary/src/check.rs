@@ -1,6 +1,5 @@
 use crate::{
     read_ts_exports,
-    read_tsx_exports,
     rule_single_named_export,
     rule_result,
     rule_star_export_index,
@@ -10,7 +9,6 @@ use crate::{
 };
 
 use read_ts_exports::read_ts_exports;
-use read_tsx_exports::read_tsx_exports;
 use rule_single_named_export::rule_single_named_export;
 use rule_star_export_index::rule_star_export_index;
 use rule_filename_matches_export::rule_filename_matches_export;
@@ -29,13 +27,7 @@ pub fn check_command(directory: String) {
             Ok(file) => {
                 file_count += 1;
                 
-                let is_tsx = file.path.to_lowercase().ends_with(".tsx");
-                
-                let exports_result = if is_tsx {
-                    read_tsx_exports(&file)
-                } else {
-                    read_ts_exports(&file)
-                };
+                let exports_result = read_ts_exports(&file);
                 
                 match exports_result {
                     Ok(exports) => {
@@ -92,7 +84,7 @@ pub fn check_command(directory: String) {
                         }
                     },
                     Err(err) => {
-                        println!("\nError in {} file: {}", if is_tsx { "TSX" } else { "TypeScript" }, file.path);
+                        println!("\nError in file: {}", file.path);
                         println!("  Error analyzing exports: {}", err);
                         error_count += 1;
                     }
