@@ -1,15 +1,14 @@
 use crate::{
-    iterate_src_files,
     read_ts_exports,
     read_tsx_exports,
     rule_single_named_export,
     rule_result,
     rule_star_export_index,
     rule_filename_matches_export,
-    file_system_src_file_repository::FileSystemSrcFileRepository
+    file_system_src_file_repository::FileSystemSrcFileRepository,
+    src_file_repository::SrcFileRepository
 };
 
-use iterate_src_files::iterate_src_files;
 use read_ts_exports::read_ts_exports;
 use read_tsx_exports::read_tsx_exports;
 use rule_single_named_export::rule_single_named_export;
@@ -21,7 +20,7 @@ pub fn check_command(directory: String) {
     println!("Checking TypeScript files in: {}", &directory);
     
     let repository = FileSystemSrcFileRepository;
-    let src_files = iterate_src_files(&directory, &repository);
+    let src_files = repository.iterate_src_files(&directory);
     let mut file_count = 0;
     let mut error_count = 0;
     

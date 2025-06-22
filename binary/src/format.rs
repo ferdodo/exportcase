@@ -3,10 +3,10 @@ use crate::{
     rule_single_named_export::rule_single_named_export,
     rule_star_export_index::rule_star_export_index,
     rule_result::RuleResult,
-    iterate_src_files::iterate_src_files,
     read_ts_exports::read_ts_exports,
     read_tsx_exports::read_tsx_exports,
     file_system_src_file_repository::FileSystemSrcFileRepository,
+    src_file_repository::SrcFileRepository
 };
 use std::path::Path;
 
@@ -16,7 +16,7 @@ pub fn format_command(directory: String) {
     println!("# Files that cannot be automatically renamed are listed below\n");
     
     let repository = FileSystemSrcFileRepository;
-    let src_files = iterate_src_files(&directory, &repository);
+    let src_files = repository.iterate_src_files(&directory);
     let mut skipped_files = Vec::new();
     let mut renamed_files = Vec::new();
     let mut correctly_named_count = 0;
