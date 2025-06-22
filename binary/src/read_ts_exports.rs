@@ -1,56 +1,13 @@
 use crate::src_file::SrcFile;
 use crate::ts_exports::TSExports;
-use std::path::Path;
-use swc_common::errors::{ColorConfig, Handler};
-use swc_common::sync::Lrc;
-use swc_common::SourceMap;
+use crate::ts_parser::parse_ts_file;
 use swc_ecma_ast::{
     Decl, DefaultDecl, ExportDecl, ExportDefaultDecl, ExportDefaultExpr, ExportSpecifier,
     ModuleDecl, ModuleItem,
 };
-use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 
 pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
-    let cm: Lrc<SourceMap> = Default::default();
-    let _handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
-    
-    let file_path = Path::new(&src_file.path);
-    let fm = cm.load_file(file_path)
-        .map_err(|e| format!("Could not load file: {}", e))?;
-    
-    let is_tsx = file_path.extension()
-        .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
-    
-    let syntax = match is_tsx {
-        true => Syntax::Typescript(Default::default()),
-        false => Syntax::Typescript(Default::default()),
-    };
-    
-    let lexer = Lexer::new(
-        syntax,
-        Default::default(),
-        StringInput::from(&*fm),
-        None,
-    );
-    
-    let mut parser = Parser::new_from(lexer);
-    
-    let module = if is_tsx {
-        match parser.parse_module() {
-            Ok(module) => module,
-            Err(_) => {
-                return Ok(TSExports {
-                    default_export: None,
-                    named_exports: Vec::new(),
-                    has_star_export: false,
-                    reexport_sources: Vec::new(),
-                });
-            }
-        }
-    } else {
-        parser.parse_module()
-            .map_err(|e| format!("Error during parsing: {:?}", e))?
-    };
+    let module = parse_ts_file(src_file)?;
     
     let mut ts_exports = TSExports {
         default_export: None,
@@ -120,8 +77,6 @@ pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
                         if let Some(src) = &named_export.src {
                             let source_path = src.value.to_string();
                             ts_exports.reexport_sources.push(source_path.clone());
-                            
-                            println!("Found export from: {}", source_path);
                             
                             for spec in &named_export.specifiers {
                                 if let ExportSpecifier::Named(named_spec) = spec {
