@@ -1,6 +1,5 @@
 use crate::src_file::SrcFile;
 use std::path::Path;
-use std::fs;
 use swc_common::errors::{ColorConfig, Handler};
 use swc_common::sync::Lrc;
 use swc_common::SourceMap;
@@ -13,9 +12,6 @@ pub fn parse_ts_file(src_file: &SrcFile) -> Result<swc_ecma_ast::Module, String>
     let file_path = Path::new(&src_file.path);
     let is_tsx = file_path.extension()
         .map_or(false, |ext| ext.to_string_lossy().to_lowercase() == "tsx");
-    
-    let content = fs::read_to_string(&src_file.path)
-        .map_err(|e| format!("Could not read file: {}", e))?;
     
     let ts_config = Default::default();
     let syntax = if is_tsx {
@@ -31,7 +27,7 @@ pub fn parse_ts_file(src_file: &SrcFile) -> Result<swc_ecma_ast::Module, String>
 
     let source_file = cm.new_source_file(
         swc_common::FileName::Real(file_path.to_path_buf()).into(),
-        content,
+        src_file.content.clone(),
     );
     
     let lexer = Lexer::new(

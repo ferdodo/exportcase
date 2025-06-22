@@ -5,7 +5,8 @@ use crate::{
     rule_single_named_export,
     rule_result,
     rule_star_export_index,
-    rule_filename_matches_export
+    rule_filename_matches_export,
+    file_system_src_file_repository::FileSystemSrcFileRepository
 };
 
 use iterate_src_files::iterate_src_files;
@@ -19,78 +20,87 @@ use std::process;
 pub fn check_command(directory: String) {
     println!("Checking TypeScript files in: {}", &directory);
     
-    let src_files = iterate_src_files(&directory);
+    let repository = FileSystemSrcFileRepository;
+    let src_files = iterate_src_files(&directory, &repository);
     let mut file_count = 0;
     let mut error_count = 0;
     
-    for file in src_files {
-        file_count += 1;
-        
-        let is_tsx = file.path.to_lowercase().ends_with(".tsx");
-        
-        let exports_result = if is_tsx {
-            read_tsx_exports(&file)
-        } else {
-            read_ts_exports(&file)
-        };
-        
-        match exports_result {
-            Ok(exports) => {
-                let mut file_has_error = false;
-                let mut error_messages: Vec<String> = Vec::new();
+    for file_result in src_files {
+        match file_result {
+            Ok(file) => {
+                file_count += 1;
                 
-                let rules = [
-                    rule_single_named_export(&exports, &file),
-                    rule_star_export_index(&exports, &file),
-                    rule_filename_matches_export(&exports, &file),
-                ];
+                let is_tsx = file.path.to_lowercase().ends_with(".tsx");
                 
-                for rule in &rules {
-                    if let rule_result::RuleResult::Error(msgs) = rule {
-                        file_has_error = true;
-                        error_messages.extend(msgs.clone());
-                    }
-                }
+                let exports_result = if is_tsx {
+                    read_tsx_exports(&file)
+                } else {
+                    read_ts_exports(&file)
+                };
                 
-                if file_has_error {
-                    error_count += 1;
-                    println!("\nFound TypeScript file with error: {}", file.path);
-                    
-                    if let Some(default_export) = &exports.default_export {
-                        println!("  Default export: {}", default_export);
-                    } else {
-                        println!("  No default export");
-                    }
-                    
-                    if !exports.named_exports.is_empty() {
-                        println!("  Named exports:");
-                        for export in &exports.named_exports {
-                            println!("    - {}", export);
+                match exports_result {
+                    Ok(exports) => {
+                        let mut file_has_error = false;
+                        let mut error_messages: Vec<String> = Vec::new();
+                        
+                        let rules = [
+                            rule_single_named_export(&exports, &file),
+                            rule_star_export_index(&exports, &file),
+                            rule_filename_matches_export(&exports, &file),
+                        ];
+                        
+                        for rule in &rules {
+                            if let rule_result::RuleResult::Error(msgs) = rule {
+                                file_has_error = true;
+                                error_messages.extend(msgs.clone());
+                            }
                         }
-                    } else {
-                        println!("  No named exports");
-                    }
-                    
-                    if !exports.reexport_sources.is_empty() {
-                        println!("  Re-exports from:");
-                        for source in &exports.reexport_sources {
-                            println!("    - {}", source);
+                        
+                        if file_has_error {
+                            error_count += 1;
+                            println!("\nFound TypeScript file with error: {}", file.path);
+                            
+                            if let Some(default_export) = &exports.default_export {
+                                println!("  Default export: {}", default_export);
+                            } else {
+                                println!("  No default export");
+                            }
+                            
+                            if !exports.named_exports.is_empty() {
+                                println!("  Named exports:");
+                                for export in &exports.named_exports {
+                                    println!("    - {}", export);
+                                }
+                            } else {
+                                println!("  No named exports");
+                            }
+                            
+                            if !exports.reexport_sources.is_empty() {
+                                println!("  Re-exports from:");
+                                for source in &exports.reexport_sources {
+                                    println!("    - {}", source);
+                                }
+                            }
+                            
+                            if exports.has_star_export {
+                                println!("  Has star export (export * from)");
+                            }
+                            
+                            println!("  Errors:");
+                            for error_msg in &error_messages {
+                                println!("    ❌ {}", error_msg);
+                            }
                         }
-                    }
-                    
-                    if exports.has_star_export {
-                        println!("  Has star export (export * from)");
-                    }
-                    
-                    println!("  Errors:");
-                    for error_msg in &error_messages {
-                        println!("    ❌ {}", error_msg);
+                    },
+                    Err(err) => {
+                        println!("\nError in {} file: {}", if is_tsx { "TSX" } else { "TypeScript" }, file.path);
+                        println!("  Error analyzing exports: {}", err);
+                        error_count += 1;
                     }
                 }
             },
             Err(err) => {
-                println!("\nError in {} file: {}", if is_tsx { "TSX" } else { "TypeScript" }, file.path);
-                println!("  Error analyzing exports: {}", err);
+                println!("\nError loading file: {}", err);
                 error_count += 1;
             }
         }
