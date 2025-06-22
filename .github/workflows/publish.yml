@@ -17,7 +17,7 @@ jobs:
       - working-directory: ./binary
         run: |
           cargo test
-          cargo build --release
+          cargo build --release --target wasm32-wasip1
       
       - working-directory: ./package
         run: |
@@ -27,7 +27,7 @@ jobs:
 
       - working-directory: ./package
         run: |
-          cosign sign-blob --yes --output-signature ./bin/exportcase.sig --output-certificate ./bin/exportcase.crt ./bin/exportcase
+          cosign sign-blob --yes --output-signature ./bin/exportcase.wasm.sig --output-certificate ./bin/exportcase.wasm.crt ./bin/exportcase.wasm
           cat bin/build-info.md | envsubst > bin/build-info.subst.md
           mv bin/build-info.subst.md bin/build-info.md
 

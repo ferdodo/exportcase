@@ -5,7 +5,7 @@ mod check;
 mod format;
 mod src_file;
 mod src_file_repository;
-mod file_system_src_file_repository;
+mod wasi_src_file_repository;
 mod ts_exports;
 mod read_ts_exports;
 mod rule_single_named_export;

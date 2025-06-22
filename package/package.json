@@ -3,14 +3,14 @@
 	"version": "0.11.0",
 	"main": "index.js",
 	"bin": {
-		"exportcase": "./bin/exportcase"
+		"exportcase": "./bin/exportcase.js"
 	},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/ferdodo/exportcase.git"
 	},
 	"scripts": {
-		"get-binary": "mkdir -p bin && cp ../binary/target/release/exportcase ./bin/exportcase"
+		"get-binary": "mkdir -p bin && cp ../binary/target/wasm32-wasip1/release/exportcase.wasm ./bin/exportcase.wasm"
 	},
 	"keywords": [
 		"typescript",
@@ -21,5 +21,8 @@
 	],
 	"author": "Thomas Riffard",
 	"license": "MIT",
-	"description": "A TypeScript validator that ensures file names match their exported name"
+	"description": "A TypeScript validator that ensures file names match their exported name",
+	"engines": {
+		"node": ">=16.0.0"
+	}
 }

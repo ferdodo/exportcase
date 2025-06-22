@@ -5,9 +5,9 @@ use walkdir::WalkDir;
 use crate::src_file::SrcFile;
 use crate::src_file_repository::SrcFileRepository;
 
-pub struct FileSystemSrcFileRepository;
+pub struct WasiSrcFileRepository;
 
-impl SrcFileRepository for FileSystemSrcFileRepository {
+impl SrcFileRepository for WasiSrcFileRepository {
     fn load_src_file(&self, path: &str) -> io::Result<SrcFile> {
         let content = fs::read_to_string(path)?;
         Ok(SrcFile { 

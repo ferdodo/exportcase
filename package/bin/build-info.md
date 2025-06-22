@@ -7,10 +7,10 @@ This executable was built and signed automatically by github. While the certific
 
 ```bash
 # verify the certificate
-cosign verify-blob --certificate ./bin/exportcase.crt --signature ./bin/exportcase.sig ./bin/exportcase
+cosign verify-blob --certificate ./bin/exportcase.wasm.crt --signature ./bin/exportcase.wasm.sig ./bin/exportcase.wasm
 ```
 
 ```bash
-# showdisplay the certificate's metadata
-cat ./bin/exportcase.crt | base64 -d | openssl x509 -noout -text
+# display the certificate's metadata
+cat ./bin/exportcase.wasm.crt | base64 -d | openssl x509 -noout -text
 ```

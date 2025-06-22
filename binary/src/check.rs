@@ -4,7 +4,7 @@ use crate::{
     rule_result,
     rule_star_export_index,
     rule_filename_matches_export,
-    file_system_src_file_repository::FileSystemSrcFileRepository,
+    wasi_src_file_repository::WasiSrcFileRepository,
     src_file_repository::SrcFileRepository
 };
 
@@ -17,7 +17,7 @@ use std::process;
 pub fn check_command(directory: String) {
     println!("Checking TypeScript files in: {}", &directory);
     
-    let repository = FileSystemSrcFileRepository;
+    let repository = WasiSrcFileRepository;
     let src_files = repository.iterate_src_files(&directory);
     let mut file_count = 0;
     let mut error_count = 0;
