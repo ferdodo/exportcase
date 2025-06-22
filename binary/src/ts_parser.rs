@@ -17,9 +17,16 @@ pub fn parse_ts_file(src_file: &SrcFile) -> Result<swc_ecma_ast::Module, String>
     let content = fs::read_to_string(&src_file.path)
         .map_err(|e| format!("Could not read file: {}", e))?;
     
-    let syntax = match is_tsx {
-        true => Syntax::Typescript(Default::default()),
-        false => Syntax::Typescript(Default::default()),
+    let ts_config = Default::default();
+    let syntax = if is_tsx {
+        if let Syntax::Typescript(ref mut config) = Syntax::Typescript(ts_config) {
+            config.tsx = true;
+            Syntax::Typescript(config.clone())
+        } else {
+            Syntax::Typescript(ts_config)
+        }
+    } else {
+        Syntax::Typescript(ts_config)
     };
 
     let source_file = cm.new_source_file(

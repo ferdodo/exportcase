@@ -1,12 +1,7 @@
 use crate::src_file::SrcFile;
 use crate::ts_exports::TSExports;
+use crate::ts_parser::parse_ts_file;
 use std::path::Path;
-use std::fs;
-use swc_common::errors::{ColorConfig, Handler};
-use swc_common::sync::Lrc;
-use swc_common::SourceMap;
-use swc_common::FileName;
-use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 use swc_ecma_ast::{ModuleDecl, ModuleItem, DefaultDecl, ExportSpecifier};
 
 pub fn read_tsx_exports(src_file: &SrcFile) -> Result<TSExports, String> {
@@ -18,37 +13,7 @@ pub fn read_tsx_exports(src_file: &SrcFile) -> Result<TSExports, String> {
         return Err("Not a TSX file".to_string());
     }
     
-    let tsx_content = fs::read_to_string(&src_file.path)
-        .map_err(|e| format!("Could not read TSX file: {}", e))?;
-    
-    let cm: Lrc<SourceMap> = Default::default();
-    let _handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
-    
-    let fm = cm.new_source_file(
-        FileName::Custom(src_file.path.clone()).into(),
-        tsx_content,
-    );
-    
-    let ts_config = Default::default();
-    let syntax = if let Syntax::Typescript(ref mut config) = Syntax::Typescript(ts_config) {
-        config.tsx = true;
-        Syntax::Typescript(config.clone())
-    } else {
-        Syntax::Typescript(ts_config)
-    };
-    
-    let lexer = Lexer::new(
-        syntax,
-        Default::default(),
-        StringInput::from(&*fm),
-        None,
-    );
-    
-    let mut parser = Parser::new_from(lexer);
-    
-    let module = parser.parse_module()
-        .map_err(|e| format!("Error parsing TSX file '{}': {:?}", src_file.path, e))?;
-    
+    let module = parse_ts_file(src_file)?;
     let mut ts_exports = TSExports::new();
     
     for item in &module.body {
