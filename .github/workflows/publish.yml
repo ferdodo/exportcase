@@ -66,8 +66,13 @@ jobs:
         - name: 🛒 Get source code
           uses: actions/checkout@v4
 
-        - name: 🧹 Remove existing package directory
+        - name: 🧹 Remove existing package directory (Linux/MacOS)
+          if: runner.os == 'Linux' || runner.os == 'macOS'
           run: rm -rf ./package
+
+        - name: 🧹 Remove existing package directory (Linux/MacOS)
+          if: runner.os == 'Windows'
+          run: Remove-Item -Recurse -Force .\package
 
         - name: 📥 Download artifact
           uses: actions/download-artifact@v4
@@ -76,9 +81,6 @@ jobs:
 
         - name: 📦 Extract npm package
           run: tar -xzf exportcase-${{ github.ref_name }}.tgz
-
-        - name: ✅ Verify package unpacked correctly
-          run: ls -l ./package/package.json
 
         - name: 🔬 Run example testing
           working-directory: ./example

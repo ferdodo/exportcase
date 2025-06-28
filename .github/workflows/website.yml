@@ -1,6 +1,11 @@
 name: Build and Deploy website
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'master'
+    tags-ignore:
+      - '**'
 
 permissions:
   contents: write
