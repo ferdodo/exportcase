@@ -11,7 +11,7 @@ try {
     await $`exportcase check ./src`;
     process.exit(1);
 } catch (err) {
+    await rename("./src/salutation.ts", "./src/greet.ts");
     process.exit(0);
 }
 
-await rename("./src/salutation.ts", "./src/greet.ts");

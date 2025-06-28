@@ -22,6 +22,15 @@ impl SrcFileRepository for WasiSrcFileRepository {
         let joined = base.join(directory);
         let dir_to_explore = joined.components().as_path();
 
+        WalkDir::new(base)
+            .into_iter()
+            .filter_map(Result::ok)
+            .inspect(|entry| {
+                let path = entry.path();
+                println!("Base: {:?}", path);
+            })
+            .count();
+
         WalkDir::new(dir_to_explore)
             .into_iter()
             .filter_map(Result::ok)
