@@ -17,9 +17,15 @@ impl SrcFileRepository for WasiSrcFileRepository {
     }
 
     fn iterate_src_files(&self, directory: &str) -> Vec<io::Result<SrcFile>> {
+        println!("Explore dir: {}", directory);
+
         WalkDir::new(directory)
             .into_iter()
             .filter_map(Result::ok)
+            .inspect(|entry| {
+                let path = entry.path();
+                println!("File: {:?}", path);
+            })
             .filter(|entry| {
                 let path = entry.path();
                 path.is_file() && is_typescript_file(path)
