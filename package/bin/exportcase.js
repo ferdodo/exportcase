@@ -10,7 +10,7 @@ const wasi = new WASI({
   args: [process.argv[1], ...process.argv.slice(2)],
   env: process.env,
   preopens: {
-    '/': process.cwd()
+    '/sandbox': process.cwd()
   }
 });
 
