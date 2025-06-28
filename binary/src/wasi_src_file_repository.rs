@@ -22,6 +22,11 @@ impl SrcFileRepository for WasiSrcFileRepository {
         let joined = base.join(directory);
         let dir_to_explore = joined.components().as_path();
 
+        for entry in std::fs::read_dir("/sandbox").unwrap() {
+            let entry = entry.unwrap();
+            println!("Sandbox entry: {:?}", entry.path());
+        }
+
         WalkDir::new(base)
             .into_iter()
             .filter_map(Result::ok)
