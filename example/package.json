@@ -1,5 +1,6 @@
 {
 	"name": "exportcase-example",
+	"type": "module",
 	"scripts": {
 		"build": "tsc --noEmit",
 		"test": "zx ./test.js"

@@ -70,7 +70,7 @@ jobs:
           if: runner.os == 'Linux' || runner.os == 'macOS'
           run: rm -rf ./package
 
-        - name: 🧹 Remove existing package directory (Linux/MacOS)
+        - name: 🧹 Remove existing package directory (Windows)
           if: runner.os == 'Windows'
           run: Remove-Item -Recurse -Force .\package
 

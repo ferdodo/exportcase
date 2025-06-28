@@ -18,9 +18,9 @@ impl SrcFileRepository for WasiSrcFileRepository {
 
     fn iterate_src_files(&self, directory: &str) -> Vec<io::Result<SrcFile>> {
         println!("Explore dir: {}", directory);
-
         let base = Path::new("/sandbox");
-        let dir_to_explore = base.join(directory);
+        let joined = base.join(directory);
+        let dir_to_explore = joined.components().as_path();
 
         WalkDir::new(dir_to_explore)
             .into_iter()
