@@ -1,4 +1,4 @@
-name: publish
+name: 🌎 Create release
 
 on:
   push:
