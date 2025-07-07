@@ -12,6 +12,7 @@ permissions:
 jobs:
   compile:
     name: 📦 Compile binary
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
