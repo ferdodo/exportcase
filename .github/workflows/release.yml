@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: exportcase.${{ github.ref_name }}.${{ matrix.binary }}
-          path: ./binary/target/${{ matrix.target }}/release/${{ matrix.binary }}
+          path: ./binary/target/${{ matrix.target }}/${{ matrix.binary }}
 
   package:
     name: 📦 Build npm package 
