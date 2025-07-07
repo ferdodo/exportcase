@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   compile:
+    name: 📦 Compile binary
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
@@ -34,23 +35,23 @@ jobs:
             binary: exportcase
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
-      steps:
-        - name: 🛒 Get source code
-          uses: actions/checkout@v4
+    steps:
+      - name: 🛒 Get source code
+        uses: actions/checkout@v4
 
-        - name: 💻 Run setup script
-          working-directory: ./binary
-          run: ${{ matrix.setup }}
+      - name: 💻 Run setup script
+        working-directory: ./binary
+        run: ${{ matrix.setup }}
 
-        - name: 🔨 Compile binary
-          working-directory: ./binary
-          run: ${{ matrix.build }}
+      - name: 🔨 Compile binary
+        working-directory: ./binary
+        run: ${{ matrix.build }}
 
-        - name: 📂 Upload binary
-          uses: actions/upload-artifact@v4
-          with:
-            name: ${{ github.ref_name }}/binary/target/${{ matrix.target }}/release/${{ matrix.binary }}
-            path: ./binary/target//${{ matrix.target }}/release/${{ matrix.binary }}
+      - name: 📂 Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.ref_name }}/binary/target/${{ matrix.target }}/release/${{ matrix.binary }}
+          path: ./binary/target//${{ matrix.target }}/release/${{ matrix.binary }}
 
   package:
     name: 📦 Build npm package 
