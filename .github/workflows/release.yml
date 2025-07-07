@@ -19,18 +19,18 @@ jobs:
           - os: ubuntu-latest
             target: wasm32-wasip1/release
             binary: exportcase.wasm
-            setup: ./scripts/setup-linux.sh
-            build: ./scripts/build-linux.sh
-          #- os: windows-latest
-          #  target: release
-          #  binary: exportcase.exe
-          #  setup: ./scripts/setup-linux.sh
-          #  build: ./scripts/build-linux.sh
+            setup: ./scripts/setup.sh
+            build: ./scripts/build.sh
+          - os: windows-latest
+            target: release
+            binary: exportcase.exe
+            setup: .\scripts\setup.ps1
+            build: .\scripts\build.ps1
           - os: ubuntu-latest
             target: release
             binary: exportcase
-            setup: ./scripts/setup-linux.sh
-            build: ./scripts/build-linux.sh
+            setup: ./scripts/setup.sh
+            build: ./scripts/build.sh
     steps:
       - name: 🛒 Get source code
         uses: actions/checkout@v4
