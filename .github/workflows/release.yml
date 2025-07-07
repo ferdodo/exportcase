@@ -46,7 +46,7 @@ jobs:
       - name: 📂 Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: exportcase.${{ github.ref_name }}.${{ matrix.binary }}
+          name: ${{ github.ref_name }}.${{ matrix.binary }}
           path: ./binary/target/${{ matrix.target }}/${{ matrix.binary }}
 
   package:
@@ -61,17 +61,20 @@ jobs:
       - name: 📥 Download wasm binary
         uses: actions/download-artifact@v4
         with:
-          name: exportcase.${{ github.ref_name }}.exportcase.wasm
+          name: ${{ github.ref_name }}.exportcase.wasm
+          path: ./binary/target/wasm32-wasip1/release
 
       - name: 📥 Download linux binary
         uses: actions/download-artifact@v4
         with:
-          name: exportcase.${{ github.ref_name }}.exportcase
+          name: ${{ github.ref_name }}.exportcase
+          path: ./binary/target/release
 
       - name: 📥 Download windows binary
         uses: actions/download-artifact@v4
         with:
-          name: exportcase.${{ github.ref_name }}.exportcase.exe
+          name: ${{ github.ref_name }}.exportcase.exe
+          path: ./binary/target/release
 
       - name: 📂 Move binary to package
         working-directory: ./package
