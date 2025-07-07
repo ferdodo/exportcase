@@ -21,11 +21,11 @@ jobs:
             binary: exportcase.wasm
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
-          - os: windows-latest
-            target: .
-            binary: exportcase.exe
-            setup: ./scripts/setup-linux.sh
-            build: ./scripts/build-linux.sh
+          #- os: windows-latest
+          #  target: .
+          #  binary: exportcase.exe
+          #  setup: ./scripts/setup-linux.sh
+          #  build: ./scripts/build-linux.sh
           - os: ubuntu-latest
             target: .
             binary: exportcase
