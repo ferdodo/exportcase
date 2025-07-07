@@ -1,6 +1,6 @@
 {
 	"name": "exportcase",
-	"version": "1.0.17",
+	"version": "1.0.18",
 	"main": "index.js",
 	"bin": {
 		"exportcase": "./bin/exportcase.js"
@@ -10,7 +10,7 @@
 		"url": "git+https://github.com/ferdodo/exportcase.git"
 	},
 	"scripts": {
-		"get-binary": "mkdir -p bin && cp ../binary/target/wasm32-wasip1/release/exportcase.wasm ./bin/exportcase.wasm"
+		"get-binaries": "node ./scripts/get-binaries.mjs"
 	},
 	"keywords": [
 		"typescript",
