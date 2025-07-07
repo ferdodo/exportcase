@@ -22,12 +22,12 @@ jobs:
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
           - os: windows-latest
-            target: x86_64-pc-windows-gnu
+            target: .
             binary: exportcase.exe
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
           - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
+            target: .
             binary: exportcase
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
@@ -46,7 +46,7 @@ jobs:
       - name: 📂 Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ github.ref_name }}-${{ matrix.target }}-${{ matrix.binary }}
+          name: exportcase.${{ github.ref_name }}.${{ matrix.binary }}
           path: ./binary/target/${{ matrix.target }}/release/${{ matrix.binary }}
 
   package:
@@ -61,17 +61,17 @@ jobs:
       - name: 📥 Download wasm binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.ref_name }}-wasm32-wasip1-exportcase.wasm
+          name: exportcase.${{ github.ref_name }}.exportcase.wasm
 
       - name: 📥 Download linux binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.ref_name }}-x86_64-unknown-linux-gnu-exportcase
+          name: exportcase.${{ github.ref_name }}.exportcase
 
       - name: 📥 Download windows binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.ref_name }}-x86_64-pc-windows-gnu-exportcase.exe
+          name: exportcase.${{ github.ref_name }}.exportcase.exe
 
       - name: 📂 Move binary to package
         working-directory: ./package
