@@ -17,17 +17,17 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            target: wasm32-wasip1
+            target: wasm32-wasip1/release
             binary: exportcase.wasm
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
           #- os: windows-latest
-          #  target: .
+          #  target: release
           #  binary: exportcase.exe
           #  setup: ./scripts/setup-linux.sh
           #  build: ./scripts/build-linux.sh
           - os: ubuntu-latest
-            target: .
+            target: release
             binary: exportcase
             setup: ./scripts/setup-linux.sh
             build: ./scripts/build-linux.sh
