@@ -1,5 +1,5 @@
-import { access, copyFile, mkdir } from 'node:fs/promises';
-import { join } from 'node:path';
+import { access, copyFile, mkdir } from "node:fs/promises";
+import { join, resolve } from "node:path";
 
 async function fileExists(path) {
 	try {
@@ -10,25 +10,19 @@ async function fileExists(path) {
 	}
 }
 
-await mkdir('bin', { recursive: true });
+await mkdir("bin", { recursive: true });
 
-if (await fileExists(join('..', 'binary', 'target', 'release', 'exportcase.exe'))) {
-	await copyFile(
-		join('..', 'binary', 'target', 'release', 'exportcase.exe'),
-		join('bin', 'exportcase.exe'),
-	);
-}
+const binaries = [
+	["..", "binary", "target", "release", "exportcase.exe"],
+	["..", "binary", "target", "release", "exportcase"],
+	["..", "binary", "target", "wasm32-wasip1", "release", "exportcase.wasm"],
+];
 
-if (await fileExists(join('..', 'binary', 'target', 'release', 'exportcase'))) {
-	await copyFile(
-		join('..', 'binary', 'target', 'release', 'exportcase'),
-		join('bin', 'exportcase'),
-	);
-}
+for (const binary of binaries) {
+	const name = binary[binary.length - 1]
 
-if (await fileExists(join('..', 'binary', 'target', 'wasm32-wasip1', 'release', 'exportcase.wasm'))) {
-	await copyFile(
-		join('..', 'binary', 'target', 'wasm32-wasip1', 'release', 'exportcase.wasm'),
-		join('bin', 'exportcase.wasm'),
-	);
+	if (await fileExists(join(...binary))) {
+		await copyFile(join(...binary), join("bin", name));
+		console.log("Copied file to", resolve(join("bin", name)));
+	}
 }
