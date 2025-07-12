@@ -14,6 +14,7 @@ jobs:
     name: 📦 Compile wasm
     uses: ./.github/workflows/compile.yml
     with:
+      os: ubuntu-latest
       target: wasm32-wasip1/release
       binary: exportcase.wasm
       setup: ./scripts/setup.sh
