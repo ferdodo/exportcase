@@ -12,7 +12,7 @@ const exePathLinux = path.join(__dirname, "exportcase");
 
 if (isWindows && fs.existsSync(exePathWin)) {
 	const args = process.argv.slice(2);
-	const result = spawnSync(exePath, args, { stdio: "inherit" });
+	const result = spawnSync(exePathWin, args, { stdio: "inherit" });
 	process.exit(result.status ?? 0);
 } else if (isLinux && fs.existsSync(exePathLinux)) {
 	const args = process.argv.slice(2);
