@@ -12,15 +12,13 @@ permissions:
 jobs:
   package-wasm-only:
     name: 📦 Compile wasm
-    runs-on: ubuntu-latest
-    steps:
-      - uses: ./.github/workflows/compile.yml
-        with:
-          target: wasm32-wasip1/release
-          binary: exportcase.wasm
-          setup: ./scripts/setup.sh
-          build: ./scripts/build.sh
-          skippable: false
+    uses: ./.github/workflows/compile.yml
+    with:
+      target: wasm32-wasip1/release
+      binary: exportcase.wasm
+      setup: ./scripts/setup.sh
+      build: ./scripts/build.sh
+      skippable: false
 
   compile:
     name: 📦 Compile binary
