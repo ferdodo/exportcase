@@ -2,16 +2,21 @@
 
 import { $ } from "zx";
 import { rename } from "fs/promises";
+import path from "path";
 
-const result = await $`exportcase check ./src`;
+const srcDir = path.resolve("src");
+const greetPath = path.join(srcDir, "greet.ts");
+const salutationPath = path.join(srcDir, "salutation.ts");
+
+const result = await $`exportcase check ${srcDir}`;
 console.log(result.stdout);
-await rename("./src/greet.ts", "./src/salutation.ts");
+
+await rename(greetPath, salutationPath);
 
 try {
-    await $`exportcase check ./src`;
-    process.exit(1);
+	await $`exportcase check ${srcDir}`;
+	process.exit(1);
 } catch (err) {
-    await rename("./src/salutation.ts", "./src/greet.ts");
-    process.exit(0);
+	await rename(salutationPath, greetPath);
+	process.exit(0);
 }
-
