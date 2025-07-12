@@ -7,8 +7,8 @@ const { spawnSync } = require("child_process");
 
 const isWindows = process.platform === "win32";
 const isLinux = process.platform === "linux";
-const exePathWin = path.join(__dirname, "bin", "exportcase.exe");
-const exePathLinux = path.join(__dirname, "bin", "exportcase");
+const exePathWin = path.join(__dirname, "exportcase.exe");
+const exePathLinux = path.join(__dirname, "exportcase");
 
 if (isWindows && fs.existsSync(exePathWin)) {
 	const args = process.argv.slice(2);

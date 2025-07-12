@@ -19,7 +19,7 @@ on:
 
 jobs:
   compile:
-    name: 📦 Compile fallback binary
+    name: Compile
     runs-on: ${{ inputs.os }}
     steps:
       - name: 🛒 Get source code
