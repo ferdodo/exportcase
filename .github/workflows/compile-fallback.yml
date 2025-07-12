@@ -19,22 +19,44 @@ on:
 
 jobs:
   compile:
-    name: 📦 Compile
+    name: 📦 Compile fallback binary
     runs-on: ${{ inputs.os }}
     steps:
       - name: 🛒 Get source code
         uses: actions/checkout@v4
 
+      - name: 📥 Download wasm binary
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ github.ref_name }}.exportcase.wasm
+          path: ./binary/target/wasm32-wasip1/release
+
+      - name: 📂 Move binary to package
+        working-directory: ./package
+        run: npm run get-binaries
+
+      - name: 🔬 Run example testing
+        id: testing
+        working-directory: ./example
+        run: |
+          npm install
+          npm run build
+          npm run test
+        continue-on-error: true
+
       - name: 💻 Run setup script
         working-directory: ./binary
+        if: steps.testing.outcome == 'failure'
         run: ${{ inputs.setup }}
 
       - name: 🔨 Compile binary
         working-directory: ./binary
+        if: steps.testing.outcome == 'failure'
         run: ${{ inputs.build }}
 
       - name: 📂 Upload binary
         uses: actions/upload-artifact@v4
+        if: steps.testing.outcome == 'failure'
         with:
           name: ${{ github.ref_name }}.${{ inputs.binary }}
           path: ./binary/target/${{ inputs.target }}/${{ inputs.binary }}
