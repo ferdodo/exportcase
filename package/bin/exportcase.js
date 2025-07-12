@@ -1,25 +1,41 @@
 #!/usr/bin/env node
 
-const { WASI } = require('wasi');
-const path = require('path');
-const fs = require('fs');
+const { WASI } = require("wasi");
+const path = require("path");
+const fs = require("fs");
+const { spawnSync } = require("child_process");
 
-const wasi = new WASI({
-  version: 'preview1',
-  returnOnExit: true,
-  args: [process.argv[1], ...process.argv.slice(2)],
-  env: process.env,
-  preopens: {
-    '/sandbox': process.cwd()
-  }
-});
+const isWindows = process.platform === "win32";
+const isLinux = process.platform === "linux";
+const exePathWin = path.join(__dirname, "bin", "exportcase.exe");
+const exePathLinux = path.join(__dirname, "bin", "exportcase");
 
-const wasmPath = path.join(__dirname, 'exportcase.wasm');
-const importObject = { wasi_snapshot_preview1: wasi.wasiImport };
+if (isWindows && fs.existsSync(exePathWin)) {
+	const args = process.argv.slice(2);
+	const result = spawnSync(exePath, args, { stdio: "inherit" });
+	process.exit(result.status ?? 0);
+} else if (isLinux && fs.existsSync(exePathLinux)) {
+	const args = process.argv.slice(2);
+	const result = spawnSync(exePathLinux, args, { stdio: "inherit" });
+	process.exit(result.status ?? 0);
+} else {
+	const wasi = new WASI({
+		version: "preview1",
+		returnOnExit: true,
+		args: [process.argv[1], ...process.argv.slice(2)],
+		env: process.env,
+		preopens: {
+			"/sandbox": process.cwd(),
+		},
+	});
 
-(async () => {
-  const wasm = await WebAssembly.compile(fs.readFileSync(wasmPath));
-  const instance = await WebAssembly.instantiate(wasm, importObject);
-  const exitCode = wasi.start(instance);
-  process.exit(exitCode);
-})(); 
+	const wasmPath = path.join(__dirname, "exportcase.wasm");
+	const importObject = { wasi_snapshot_preview1: wasi.wasiImport };
+
+	(async () => {
+		const wasm = await WebAssembly.compile(fs.readFileSync(wasmPath));
+		const instance = await WebAssembly.instantiate(wasm, importObject);
+		const exitCode = wasi.start(instance);
+		process.exit(exitCode);
+	})();
+}
