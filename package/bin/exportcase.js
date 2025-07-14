@@ -12,7 +12,7 @@ const exePathLinux = path.join(__dirname, "exportcase");
 const isMac = process.platform === "darwin";
 const exePathMac = path.join(__dirname, "darwin-exportcase");
 
-console.log({isWindows, isLinux, isMac, platform: process.platform})
+console.log({ isWindows, isLinux, isMac, platform: process.platform });
 
 if (isWindows && fs.existsSync(exePathWin)) {
 	const args = process.argv.slice(2);
@@ -25,7 +25,20 @@ if (isWindows && fs.existsSync(exePathWin)) {
 } else if (isMac && fs.existsSync(exePathMac)) {
 	console.log("Running mac fallback executable", exePathMac);
 	const args = process.argv.slice(2);
-	const result = spawnSync(exePathMac, args, { stdio: "inherit" });
+
+	const result = spawnSync(exePathMac, args, {
+		stdio: "inherit",
+		encoding: "utf-8",
+	});
+	
+	const status = result.status ?? 0;
+
+	if (status !== 0) {
+		console.log({ result });
+		console.log("stdin", result.stdin);
+		console.log("stdin", result.stdin);
+	}
+
 	process.exit(result.status ?? 0);
 } else {
 	console.log("Running webassembly");
