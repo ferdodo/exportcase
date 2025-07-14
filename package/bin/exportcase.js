@@ -31,6 +31,8 @@ if (isWindows && fs.existsSync(exePathWin)) {
 			stdio: "pipe",
 			encoding: "utf-8",
 		});
+		console.log(result);
+		console.log("error:", result.error);
 		console.log("stdout:", result.stdout);
 		console.log("stderr:", result.stderr);
 		process.exit(result.status ?? 0);
