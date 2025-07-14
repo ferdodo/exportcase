@@ -104,12 +104,27 @@ jobs:
       - name: 🤝 Install cosign
         uses: sigstore/cosign-installer@v3.4.0
 
-      - name: ✍🏻 Sign release
+      - name: ✍🏻 Sign wasm release
         working-directory: ./package
         run: |
           cosign sign-blob --yes --output-signature ./bin/exportcase.wasm.sig --output-certificate ./bin/exportcase.wasm.crt ./bin/exportcase.wasm
           cat bin/build-info.md | envsubst > bin/build-info.subst.md
           mv bin/build-info.subst.md bin/build-info.md
+
+      - name: ✍🏻 Sign windows release
+        working-directory: ./package
+        continue-on-error: true
+        run: cosign sign-blob --yes --output-signature ./bin/exportcase.exe.sig --output-certificate ./bin/exportcase.exe.crt ./bin/exportcase.exe
+
+      - name: ✍🏻 Sign linux release
+        working-directory: ./package
+        continue-on-error: true
+        run: cosign sign-blob --yes --output-signature ./bin/exportcase.sig --output-certificate ./bin/exportcase.crt ./bin/exportcase
+
+      - name: ✍🏻 Sign mac-os release
+        working-directory: ./package
+        continue-on-error: true
+        run: cosign sign-blob --yes --output-signature ./bin/darwin-exportcase.sig --output-certificate ./bin/darwin-exportcase.crt ./bin/darwin-exportcase
 
       - name: 🗂️ Create archive
         working-directory: ./package
@@ -187,6 +202,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.ref_name }}
+          asset_path: exportcase-${{ github.ref_name }}.tgz
           asset_name: exportcase-${{ github.ref_name }}.tgz
           asset_content_type: application/gzip
