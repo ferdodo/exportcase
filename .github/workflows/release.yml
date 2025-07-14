@@ -6,8 +6,7 @@ on:
       - '*'
 
 permissions:
-  id-token: write
-  contents: read
+  contents: write
 
 jobs:
   compile-wasm:
@@ -42,6 +41,17 @@ jobs:
       setup: ./scripts/setup.sh
       build: ./scripts/build.sh
 
+  compile-macos-fallback:
+    name: 📦 Compile linux fallback
+    uses: ./.github/workflows/compile-fallback.yml
+    needs: compile-wasm
+    with:
+      os: macos-latest
+      target: release
+      binary: exportcase
+      setup: ./scripts/setup.sh
+      build: ./scripts/build.sh
+  
   package:
     name: 📦 Build npm package 
     runs-on: ubuntu-latest
@@ -49,6 +59,7 @@ jobs:
       - compile-wasm
       - compile-windows-fallback
       - compile-linux-fallback
+      - compile-macos-fallback
     steps:
 
       - name: 🛒 Get source code
@@ -64,14 +75,21 @@ jobs:
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
-          name: ${{ github.ref_name }}.exportcase
+          name: ${{ github.ref_name }}.ubuntu-latest.exportcase
           path: ./binary/target/release
 
       - name: 📥 Download windows binary
         uses: actions/download-artifact@v4
         continue-on-error: true
         with:
-          name: ${{ github.ref_name }}.exportcase.exe
+          name: ${{ github.ref_name }}.windows-latest.exportcase.exe
+          path: ./binary/target/release
+
+      - name: 📥 Download macos binary
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: ${{ github.ref_name }}.macos-latest.exportcase
           path: ./binary/target/release
 
       - name: 📂 Move binary to package
@@ -105,7 +123,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest]
         node: [16, 'latest']
 
     steps:

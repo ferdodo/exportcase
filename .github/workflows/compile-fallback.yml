@@ -54,9 +54,13 @@ jobs:
         if: steps.testing.outcome == 'failure'
         run: ${{ inputs.build }}
 
+      - name: Rename binary for macOS
+        if: runner.os == 'macOS'
+        run: ./binary/target/${{ inputs.target }}/${{ inputs.binary }} ./binary/target/${{ inputs.target }}/darwin-${{ inputs.binary }}
+
       - name: 📂 Upload binary
         uses: actions/upload-artifact@v4
         if: steps.testing.outcome == 'failure'
         with:
-          name: ${{ github.ref_name }}.${{ inputs.binary }}
-          path: ./binary/target/${{ inputs.target }}/${{ inputs.binary }}
+          name: ${{ github.ref_name }}.${{ inputs.os }}.${{ inputs.binary }}
+          path: ./binary/target/${{ inputs.target }}/darwin-${{ inputs.binary }}

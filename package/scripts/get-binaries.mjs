@@ -15,6 +15,7 @@ await mkdir("bin", { recursive: true });
 const binaries = [
 	["..", "binary", "target", "release", "exportcase.exe"],
 	["..", "binary", "target", "release", "exportcase"],
+	["..", "binary", "target", "release", "darwin-exportcase"],
 	["..", "binary", "target", "wasm32-wasip1", "release", "exportcase.wasm"],
 ];
 
