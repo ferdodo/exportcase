@@ -28,17 +28,11 @@ if (isWindows && fs.existsSync(exePathWin)) {
 
 	try {
 		const result = spawnSync(exePathMac, args, {
-			stdio: "inherit",
+			stdio: "pipe",
 			encoding: "utf-8",
 		});
-		const status = result.status ?? 0;
-
-		if (status !== 0) {
-			console.log({ result });
-			console.log("stdin", result.stdin);
-			console.log("stdin", result.stdin);
-		}
-
+		console.log("stdout:", result.stdout);
+		console.log("stderr:", result.stderr);
 		process.exit(result.status ?? 0);
 	} catch (error) {
 		console.log("spawnSync error");
