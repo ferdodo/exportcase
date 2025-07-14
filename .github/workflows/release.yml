@@ -31,12 +31,24 @@ jobs:
       setup: .\scripts\setup.ps1
       build: .\scripts\build.ps1
 
+  compile-linux-fallback:
+    name: 📦 Compile linux fallback
+    uses: ./.github/workflows/compile-fallback.yml
+    needs: compile-wasm
+    with:
+      os: ubuntu-latest
+      target: release
+      binary: exportcase
+      setup: ./scripts/setup.sh
+      build: ./scripts/build.sh
+
   package:
     name: 📦 Build npm package 
     runs-on: ubuntu-latest
     needs:
       - compile-wasm
       - compile-windows-fallback
+      - compile-linux-fallback
     steps:
 
       - name: 🛒 Get source code
@@ -152,6 +164,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: package/exportcase-${{ github.ref_name }}.tgz
+          asset_path: ${{ github.ref_name }}
           asset_name: exportcase-${{ github.ref_name }}.tgz
           asset_content_type: application/gzip
