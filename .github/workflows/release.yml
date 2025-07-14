@@ -93,6 +93,10 @@ jobs:
           name: ${{ github.ref_name }}.macos-latest.exportcase
           path: ./binary/target/release
 
+      - name: Restore execution rights for apple
+        continue-on-error: true
+        run: chmod +x ./binary/target/release/darwin-exportcase
+
       - name: 📂 Move binary to package
         working-directory: ./package
         run: npm run get-binaries

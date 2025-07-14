@@ -12,37 +12,34 @@ const exePathLinux = path.join(__dirname, "exportcase");
 const isMac = process.platform === "darwin";
 const exePathMac = path.join(__dirname, "darwin-exportcase");
 
-console.log({ isWindows, isLinux, isMac, platform: process.platform });
-
 if (isWindows && fs.existsSync(exePathWin)) {
 	const args = process.argv.slice(2);
 	const result = spawnSync(exePathWin, args, { stdio: "inherit" });
+
+	if (result.error) {
+		console.error(result.error);
+	}
+
 	process.exit(result.status ?? 0);
 } else if (isLinux && fs.existsSync(exePathLinux)) {
 	const args = process.argv.slice(2);
 	const result = spawnSync(exePathLinux, args, { stdio: "inherit" });
+
+	if (result.error) {
+		console.error(result.error);
+	}
+
 	process.exit(result.status ?? 0);
 } else if (isMac && fs.existsSync(exePathMac)) {
-	console.log("Running mac fallback executable", exePathMac);
 	const args = process.argv.slice(2);
+	const result = spawnSync(exePathMac, args, { stdio: "inherit" });
 
-	try {
-		const result = spawnSync(exePathMac, args, {
-			stdio: "pipe",
-			encoding: "utf-8",
-		});
-		console.log(result);
-		console.log("error:", result.error);
-		console.log("stdout:", result.stdout);
-		console.log("stderr:", result.stderr);
-		process.exit(result.status ?? 0);
-	} catch (error) {
-		console.log("spawnSync error");
-		console.log(error);
+	if (result.error) {
+		console.error(result.error);
 	}
-} else {
-	console.log("Running webassembly");
 
+	process.exit(result.status ?? 0);
+} else {
 	const wasi = new WASI({
 		version: "preview1",
 		returnOnExit: true,
