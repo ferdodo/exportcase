@@ -63,4 +63,4 @@ jobs:
         if: steps.testing.outcome == 'failure'
         with:
           name: ${{ github.ref_name }}.${{ inputs.os }}.${{ inputs.binary }}
-          path: ./binary/target/${{ inputs.target }}/darwin-${{ inputs.binary }}
+          path: ./binary/target/${{ inputs.target }}/${{ runner.os == 'macOS' && 'darwin-' || '' }}${{ inputs.binary }}
