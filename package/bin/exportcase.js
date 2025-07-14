@@ -26,20 +26,24 @@ if (isWindows && fs.existsSync(exePathWin)) {
 	console.log("Running mac fallback executable", exePathMac);
 	const args = process.argv.slice(2);
 
-	const result = spawnSync(exePathMac, args, {
-		stdio: "inherit",
-		encoding: "utf-8",
-	});
-	
-	const status = result.status ?? 0;
+	try {
+		const result = spawnSync(exePathMac, args, {
+			stdio: "inherit",
+			encoding: "utf-8",
+		});
+		const status = result.status ?? 0;
 
-	if (status !== 0) {
-		console.log({ result });
-		console.log("stdin", result.stdin);
-		console.log("stdin", result.stdin);
+		if (status !== 0) {
+			console.log({ result });
+			console.log("stdin", result.stdin);
+			console.log("stdin", result.stdin);
+		}
+
+		process.exit(result.status ?? 0);
+	} catch (error) {
+		console.log("spawnSync error");
+		console.log(error);
 	}
-
-	process.exit(result.status ?? 0);
 } else {
 	console.log("Running webassembly");
 

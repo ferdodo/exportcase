@@ -1,6 +1,6 @@
 {
 	"name": "exportcase",
-	"version": "1.0.43",
+	"version": "1.0.44",
 	"main": "index.js",
 	"bin": {
 		"exportcase": "./bin/exportcase.js"
