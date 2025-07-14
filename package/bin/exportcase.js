@@ -7,10 +7,15 @@ const { spawnSync } = require("child_process");
 
 const isWindows = process.platform === "win32";
 const exePathWin = path.join(__dirname, "exportcase.exe");
-
+const isLinux = process.platform === "linux";
+const exePathLinux = path.join(__dirname, "exportcase");
 if (isWindows && fs.existsSync(exePathWin)) {
 	const args = process.argv.slice(2);
 	const result = spawnSync(exePathWin, args, { stdio: "inherit" });
+	process.exit(result.status ?? 0);
+} else if (isLinux && fs.existsSync(exePathLinux)) {
+	const args = process.argv.slice(2);
+	const result = spawnSync(exePathLinux, args, { stdio: "inherit" });
 	process.exit(result.status ?? 0);
 } else {
 	const wasi = new WASI({
@@ -19,7 +24,7 @@ if (isWindows && fs.existsSync(exePathWin)) {
 		args: [process.argv[1], ...process.argv.slice(2)],
 		env: process.env,
 		preopens: {
-			"/sandbox": process.cwd(),
+			"/": process.cwd(),
 		},
 	});
 
