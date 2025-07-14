@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   compile-wasm:
-    name: 📦 Compile wasm
+    name: 🧩 Compile wasm
     uses: ./.github/workflows/compile.yml
     with:
       os: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
       build: ./scripts/build.sh
 
   compile-windows-fallback:
-    name: 📦 Compile windows fallback
+    name: 🪟 Windows fallback
     uses: ./.github/workflows/compile-fallback.yml
     needs: compile-wasm
     with:
@@ -31,7 +31,7 @@ jobs:
       build: .\scripts\build.ps1
 
   compile-linux-fallback:
-    name: 📦 Compile linux fallback
+    name: 🐧 Linux fallback
     uses: ./.github/workflows/compile-fallback.yml
     needs: compile-wasm
     with:
@@ -42,7 +42,7 @@ jobs:
       build: ./scripts/build.sh
 
   compile-macos-fallback:
-    name: 📦 Compile linux fallback
+    name: 🍎 Macos fallback
     uses: ./.github/workflows/compile-fallback.yml
     needs: compile-wasm
     with:

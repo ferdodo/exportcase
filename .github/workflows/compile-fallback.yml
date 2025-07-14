@@ -56,7 +56,7 @@ jobs:
 
       - name: Rename binary for macOS
         if: runner.os == 'macOS'
-        run: ./binary/target/${{ inputs.target }}/${{ inputs.binary }} ./binary/target/${{ inputs.target }}/darwin-${{ inputs.binary }}
+        run: mv ./binary/target/${{ inputs.target }}/${{ inputs.binary }} ./binary/target/${{ inputs.target }}/darwin-${{ inputs.binary }}
 
       - name: 📂 Upload binary
         uses: actions/upload-artifact@v4
