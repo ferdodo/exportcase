@@ -1,0 +1,20 @@
+name: Display help
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-exportcase:
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-22.04-arm
+          - windows-latest
+          - macos-latest
+          - macos-11-arm64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Run exportcase help command
+        run: npx exportcase --help
