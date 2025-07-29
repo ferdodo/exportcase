@@ -11,8 +11,9 @@ jobs:
           - ubuntu-latest
           - ubuntu-22.04-arm
           - windows-latest
-          - macos-latest
-          - macos-11-arm64
+          - macos-13
+          - macos-14
+          - windows-11-arm
     runs-on: ${{ matrix.os }}
 
     steps:
