@@ -13,7 +13,6 @@ jobs:
           - windows-latest
           - macos-13
           - macos-14
-          - windows-11-arm
     runs-on: ${{ matrix.os }}
 
     steps:
