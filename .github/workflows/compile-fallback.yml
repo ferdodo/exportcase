@@ -55,7 +55,7 @@ jobs:
         run: ${{ inputs.build }}
 
       - name: Rename binary for macOS
-        if: runner.os == 'macOS'
+        if: ${{ steps.testing.outcome == 'failure' && runner.os == 'macOS' }}
         run: mv ./binary/target/${{ inputs.target }}/${{ inputs.binary }} ./binary/target/${{ inputs.target }}/darwin-${{ inputs.binary }}
 
       - name: 📂 Upload binary
