@@ -67,6 +67,7 @@ function testRule(ruleName) {
                 console.log(`       Rule violation: ${result.output.split('❌')[1]?.trim() || 'Rule violation detected'}`);
             } else {
                 console.log(`    ❌ ${file} - PASSED (should have failed)`);
+                console.log(`\n\n${result.output}\n\n`)
                 allTestsPassed = false;
             }
         }
