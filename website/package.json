@@ -1,7 +1,7 @@
 {
 	"type": "module",
 	"scripts": {
-		"build": "node scripts/prepare-build.mjs && tsc && vite build --base ./",
+		"build": "node scripts/generate-rules-docs.mjs && node scripts/prepare-build.mjs && tsc && vite build --base ./",
 		"start": "vite --port 25032 --host"
 	},
 	"devDependencies": {
