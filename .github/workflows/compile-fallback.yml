@@ -35,9 +35,9 @@ jobs:
         working-directory: ./package
         run: npm run get-binaries
 
-      - name: 🔬 Run example testing
+      - name: 🔬 Run spec testing
         id: testing
-        working-directory: ./example
+        working-directory: ./spec
         run: |
           npm install
           npm run build
