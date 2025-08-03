@@ -1,4 +1,4 @@
-var y=Object.defineProperty;var x=(t,e,n)=>e in t?y(t,e,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[e]=n;var r=(t,e,n)=>x(t,typeof e!="symbol"?e+"":e,n);(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))l(o);new MutationObserver(o=>{for(const s of o)if(s.type==="childList")for(const a of s.addedNodes)a.tagName==="LINK"&&a.rel==="modulepreload"&&l(a)}).observe(document,{childList:!0,subtree:!0});function n(o){const s={};return o.integrity&&(s.integrity=o.integrity),o.referrerPolicy&&(s.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?s.credentials="include":o.crossOrigin==="anonymous"?s.credentials="omit":s.credentials="same-origin",s}function l(o){if(o.ep)return;o.ep=!0;const s=n(o);fetch(o.href,s)}})();function u(t){const e=document.createElement("template");return e.innerHTML=t.join(""),e}const c=class c extends HTMLElement{async connectedCallback(){var e;this.attachShadow({mode:"open"}),(e=this.shadowRoot)==null||e.appendChild(c.template.content.cloneNode(!0))}};r(c,"template",u`
+var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[e]=n;var r=(t,e,n)=>y(t,typeof e!="symbol"?e+"":e,n);(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))s(o);new MutationObserver(o=>{for(const a of o)if(a.type==="childList")for(const l of a.addedNodes)l.tagName==="LINK"&&l.rel==="modulepreload"&&s(l)}).observe(document,{childList:!0,subtree:!0});function n(o){const a={};return o.integrity&&(a.integrity=o.integrity),o.referrerPolicy&&(a.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?a.credentials="include":o.crossOrigin==="anonymous"?a.credentials="omit":a.credentials="same-origin",a}function s(o){if(o.ep)return;o.ep=!0;const a=n(o);fetch(o.href,a)}})();function u(t){const e=document.createElement("template");return e.innerHTML=t.join(""),e}const i=class i extends HTMLElement{async connectedCallback(){var e;this.attachShadow({mode:"open"}),(e=this.shadowRoot)==null||e.appendChild(i.template.content.cloneNode(!0))}};r(i,"template",u`
 	<style>
 		:host {
 			width: 100svw;
@@ -174,7 +174,7 @@ var y=Object.defineProperty;var x=(t,e,n)=>e in t?y(t,e,{enumerable:!0,configura
 		</div>
 	</div>
 </div>
-`);let m=c;const i=class i extends HTMLElement{async connectedCallback(){var n;this.attachShadow({mode:"open"});const e=i.template.content.cloneNode(!0);(n=this.shadowRoot)==null||n.appendChild(e)}};r(i,"template",u`
+`);let m=i;const c=class c extends HTMLElement{async connectedCallback(){var n;this.attachShadow({mode:"open"});const e=c.template.content.cloneNode(!0);(n=this.shadowRoot)==null||n.appendChild(e)}};r(c,"template",u`
 		<style>
 			::slotted(*) {
 				color: #C2C2C2;
@@ -203,7 +203,7 @@ var y=Object.defineProperty;var x=(t,e,n)=>e in t?y(t,e,{enumerable:!0,configura
 		</style>
 
 		<slot></slot>
-	`);let p=i;const d=class d extends HTMLElement{async connectedCallback(){var e;this.attachShadow({mode:"open"}),(e=this.shadowRoot)==null||e.appendChild(d.template.content.cloneNode(!0))}};r(d,"template",u`
+	`);let p=c;const d=class d extends HTMLElement{async connectedCallback(){var e;this.attachShadow({mode:"open"}),(e=this.shadowRoot)==null||e.appendChild(d.template.content.cloneNode(!0))}};r(d,"template",u`
 		<style>
 			:host {
 				display:block; 
@@ -269,7 +269,7 @@ var y=Object.defineProperty;var x=(t,e,n)=>e in t?y(t,e,{enumerable:!0,configura
                     }
                 </style>
                 <slot></slot>
-            `)}}class L extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot&&(this.shadowRoot.innerHTML=`
+            `)}}class S extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot&&(this.shadowRoot.innerHTML=`
                 <style>
                     :host {
                         display: block;
@@ -307,4 +307,28 @@ var y=Object.defineProperty;var x=(t,e,n)=>e in t?y(t,e,{enumerable:!0,configura
                     }
                 </style>
                 <slot></slot>
-            `)}}customElements.define("ec-background",m);customElements.define("ec-typography",p);customElements.define("ec-code",h);customElements.define("ec-example",E);customElements.define("ec-file-name",C);customElements.define("ec-explanation",k);customElements.define("ec-example-group",L);customElements.define("ec-rule-content",F);customElements.define("ec-rules-title",M);const S=[];function v(t){const e=document.createElement("div");return e.textContent=t,e.innerHTML}function R(){const t=document.createElement("div");t.className="rules-documentation";const e=document.createElement("h2");e.textContent="Rules";const n=document.createElement("ec-typography");return n.appendChild(e),t.appendChild(n),S.forEach(l=>{const o=T(l);t.appendChild(o)}),t}function T(t){const e=document.createElement("section");e.className="rule-section";const n=document.createElement("h3");n.className="rule-title",n.textContent=`Rule: ${t.name.replace(/-/g," ").replace(/\b\w/g,a=>a.toUpperCase())}`;const l=document.createElement("ec-typography");l.appendChild(n),e.appendChild(l);const o=document.createElement("ec-rule-content"),s=document.createElement("ec-typography");if(s.innerHTML=N(t.content),o.appendChild(s),e.appendChild(o),t.goodExamples.length>0||t.badExamples.length>0){const a=H(t);e.appendChild(a)}return e}function H(t){const e=document.createElement("div");if(t.goodExamples.length>0){const n=w("✅ Good Examples",t.goodExamples,"#27ae60");e.appendChild(n)}if(t.badExamples.length>0){const n=w("❌ Bad Examples",t.badExamples,"#e74c3c");e.appendChild(n)}return e}function w(t,e,n){const l=document.createElement("ec-example-group");l.style.setProperty("--example-group-color",n);const o=document.createElement("span");return o.setAttribute("slot","title"),o.textContent=t,l.appendChild(o),e.forEach(s=>{const a=document.createElement("ec-example");a.style.setProperty("--example-color",n);const b=document.createElement("ec-file-name");b.textContent=s.file,a.appendChild(b);const f=document.createElement("ec-explanation");f.textContent=s.explanation,a.appendChild(f);const g=document.createElement("ec-code");g.textContent=s.code,a.appendChild(g),l.appendChild(a)}),l}function N(t){return`<p>${t.replace(/^### (.*$)/gim,"<h3>$1</h3>").replace(/^## (.*$)/gim,"<h2>$1</h2>").replace(/^# (.*$)/gim,"<h1>$1</h1>").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\*(.*?)\*/g,"<em>$1</em>").replace(/```(\w+)?\n([\s\S]*?)```/g,(n,l,o)=>`<pre><code>${v(o)}</code></pre>`).replace(/`([^`]+)`/g,(n,l)=>`<code>${v(l)}</code>`).replace(/\n/g,"<br>")}</p>`}document.addEventListener("DOMContentLoaded",()=>{const t=document.querySelector('div[style*="display: flex"][style*="place-content: center"]');if(t&&t.parentNode){const e=R();t.parentNode.insertBefore(e,t)}});
+            `)}}customElements.define("ec-background",m);customElements.define("ec-typography",p);customElements.define("ec-code",h);customElements.define("ec-example",E);customElements.define("ec-file-name",C);customElements.define("ec-explanation",k);customElements.define("ec-example-group",S);customElements.define("ec-rule-content",F);customElements.define("ec-rules-title",M);const L=[{name:"filename-matches-export",content:"Enforces that the filename matches the name of the exported entity.",goodExamples:[{file:"Calculator.ts",explanation:"Matching filename and export name makes code easier to find and navigate.",code:`export class Calculator {
+    add(a: number, b: number): number {
+        return a + b;
+    }
+} `}],badExamples:[{file:"wrongName.ts",explanation:"Mismatched filename and export name makes code harder to find and understand.",code:`export class SomethingElse {
+    doWork(): string {
+        return "work done";
+    }
+} `}]},{name:"no-default-export",content:"Forbids the use of default exports in all TypeScript files.",goodExamples:[{file:"greet.ts",explanation:"Named exports enable better IDE autocomplete, eliminate naming collisions, and encourage meaningful export names.",code:"export function greet(name: string) {\n    return `Hello, ${name}!`;\n} "}],badExamples:[{file:"defaultFunction.ts",explanation:"Default exports enable mismatched import/export names, causing confusion and duplicate names throughout the project.",code:`export default function MyComponent() {
+    return "This should be forbidden";
+} `}]},{name:"single-named-export",content:"Enforces that each file exports exactly one named entity (function, class, constant, etc.).",goodExamples:[{file:"calculateSum.ts",explanation:"Single export maintains clear responsibility and makes the file easier to understand and test.",code:`export function calculateSum(a: number, b: number): number {
+    return a + b;
+} `}],badExamples:[{file:"multipleExports.ts",explanation:"Multiple exports in one file violate single responsibility and make the code harder to maintain.",code:`export function add(a: number, b: number): number {
+    return a + b;
+}
+
+export function subtract(a: number, b: number): number {
+    return a - b;
+}
+
+export const PI = 3.14159; `}]},{name:"star-export-index",content:"Allows star exports only in files named index.ts. All other files must use named exports.",goodExamples:[{file:"index.ts",explanation:"Index files serve as centralized entry points, allowing clean imports from the package root.",code:'export * from "math-package";'}],badExamples:[{file:"index.ts",explanation:"Index files should only centralize exports, not define their own named exports.",code:`export * from "math-package";
+
+export function someFunction(): string {
+    return "some function";
+} `}]}];function x(t){const e=document.createElement("div");return e.textContent=t,e.innerHTML}function T(){const t=document.createElement("div");t.className="rules-documentation";const e=document.createElement("h2");e.textContent="Rules";const n=document.createElement("ec-typography");return n.appendChild(e),t.appendChild(n),L.forEach(s=>{const o=R(s);t.appendChild(o)}),t}function R(t){const e=document.createElement("section");e.className="rule-section";const n=document.createElement("h3");n.className="rule-title",n.textContent=`Rule: ${t.name.replace(/-/g," ").replace(/\b\w/g,l=>l.toUpperCase())}`;const s=document.createElement("ec-typography");s.appendChild(n),e.appendChild(s);const o=document.createElement("ec-rule-content"),a=document.createElement("ec-typography");if(a.innerHTML=N(t.content),o.appendChild(a),e.appendChild(o),t.goodExamples.length>0||t.badExamples.length>0){const l=H(t);e.appendChild(l)}return e}function H(t){const e=document.createElement("div");if(t.goodExamples.length>0){const n=v("✅ Good Examples",t.goodExamples,"#27ae60");e.appendChild(n)}if(t.badExamples.length>0){const n=v("❌ Bad Examples",t.badExamples,"#e74c3c");e.appendChild(n)}return e}function v(t,e,n){const s=document.createElement("ec-example-group");s.style.setProperty("--example-group-color",n);const o=document.createElement("span");return o.setAttribute("slot","title"),o.textContent=t,s.appendChild(o),e.forEach(a=>{const l=document.createElement("ec-example");l.style.setProperty("--example-color",n);const f=document.createElement("ec-file-name");f.textContent=a.file,l.appendChild(f);const b=document.createElement("ec-explanation");b.textContent=a.explanation,l.appendChild(b);const g=document.createElement("ec-code");g.textContent=a.code,l.appendChild(g),s.appendChild(l)}),s}function N(t){return`<p>${t.replace(/^### (.*$)/gim,"<h3>$1</h3>").replace(/^## (.*$)/gim,"<h2>$1</h2>").replace(/^# (.*$)/gim,"<h1>$1</h1>").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\*(.*?)\*/g,"<em>$1</em>").replace(/```(\w+)?\n([\s\S]*?)```/g,(n,s,o)=>`<pre><code>${x(o)}</code></pre>`).replace(/`([^`]+)`/g,(n,s)=>`<code>${x(s)}</code>`).replace(/\n/g,"<br>")}</p>`}document.addEventListener("DOMContentLoaded",()=>{const t=document.querySelector('div[style*="display: flex"][style*="place-content: center"]');if(t&&t.parentNode){const e=T();t.parentNode.insertBefore(e,t)}});
