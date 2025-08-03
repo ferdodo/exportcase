@@ -8,11 +8,11 @@ const EXPORTCASE_CMD = 'exportcase';
 
 function runExportcase(directory) {
     try {
-        execSync(`${EXPORTCASE_CMD} check ${directory}`, { 
+        const output = execSync(`${EXPORTCASE_CMD} check ${directory}`, { 
             stdio: 'pipe',
             encoding: 'utf8'
         });
-        return { success: true, output: '' };
+        return { success: true, output };
     } catch (error) {
         return { 
             success: false, 
