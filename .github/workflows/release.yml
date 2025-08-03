@@ -166,8 +166,8 @@ jobs:
         - name: 📦 Extract npm package
           run: tar -xzf exportcase-${{ github.ref_name }}.tgz
 
-        - name: 🔬 Run example testing
-          working-directory: ./example
+        - name: 🔬 Run spec testing
+          working-directory: ./spec
           run: |
             npm install
             npm run build
