@@ -1,0 +1,1 @@
+Named exports enable better IDE autocomplete, eliminate naming collisions, and encourage meaningful export names.

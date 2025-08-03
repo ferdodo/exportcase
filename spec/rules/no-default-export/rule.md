@@ -1,0 +1,1 @@
+Forbids the use of default exports in all TypeScript files.

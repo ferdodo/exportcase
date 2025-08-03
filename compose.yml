@@ -28,8 +28,9 @@ services:
       - "25032:25032"
     depends_on:
       - ui
+      - spec
 
-  example:
-    build: example
+  spec:
+    build: spec
     depends_on:
       - package

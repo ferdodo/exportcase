@@ -1,5 +1,5 @@
 {
-	"name": "exportcase-example",
+	"name": "exportcase-spec",
 	"type": "module",
 	"scripts": {
 		"build": "tsc --noEmit",

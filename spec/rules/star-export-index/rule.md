@@ -1,0 +1,1 @@
+Allows star exports only in files named index.ts. All other files must use named exports.

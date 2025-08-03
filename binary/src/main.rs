@@ -11,6 +11,7 @@ mod read_ts_exports;
 mod rule_single_named_export;
 mod rule_star_export_index;
 mod rule_filename_matches_export;
+mod rule_no_default_export;
 mod rule_result;
 mod ts_parser;
 

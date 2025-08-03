@@ -1,6 +1,6 @@
 FROM exportcase-package
 
-WORKDIR /exportcase/example
+WORKDIR /exportcase/spec
 COPY package.json .
 RUN npm install
 RUN npm audit --audit-level=high

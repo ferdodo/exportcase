@@ -4,6 +4,7 @@ use crate::{
     rule_result,
     rule_star_export_index,
     rule_filename_matches_export,
+    rule_no_default_export,
     wasi_src_file_repository::WasiSrcFileRepository,
     src_file_repository::SrcFileRepository
 };
@@ -12,6 +13,7 @@ use read_ts_exports::read_ts_exports;
 use rule_single_named_export::rule_single_named_export;
 use rule_star_export_index::rule_star_export_index;
 use rule_filename_matches_export::rule_filename_matches_export;
+use rule_no_default_export::rule_no_default_export;
 use std::process;
 
 pub fn check_command(directory: String) {
@@ -38,6 +40,7 @@ pub fn check_command(directory: String) {
                             rule_single_named_export(&exports, &file),
                             rule_star_export_index(&exports, &file),
                             rule_filename_matches_export(&exports, &file),
+                            rule_no_default_export(&exports, &file),
                         ];
                         
                         for rule in &rules {

@@ -1,0 +1,1 @@
+Default exports enable mismatched import/export names, causing confusion and duplicate names throughout the project.

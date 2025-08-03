@@ -1,0 +1,1 @@
+Multiple exports in one file violate single responsibility and make the code harder to maintain. 

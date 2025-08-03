@@ -1,0 +1,1 @@
+Index files serve as centralized entry points, allowing clean imports from the package root. 

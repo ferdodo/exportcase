@@ -1,0 +1,1 @@
+Single export maintains clear responsibility and makes the file easier to understand and test. 

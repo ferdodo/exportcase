@@ -1,0 +1,1 @@
+Index files should only centralize exports, not define their own named exports.

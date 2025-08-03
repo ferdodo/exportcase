@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title> exportcase ui </title>
+		<title>ExportCase UI - Component Library</title>
 		<link rel="icon" href="./favicon.ico" type="image/x-icon">
 		<meta name="viewport" content="width=device-width, initial-scale=0.85, user-scalable=no">
 		<link rel="stylesheet" href="./exportcase-ui.css">
@@ -12,15 +12,182 @@
 	<body>
         <ec-background></ec-background>
 
-        <ec-typography>
-            <h1> exportcase ui </h1>
+        <main>
+            <ec-typography>
+                <h1>ExportCase UI Component Library</h1>
+                
+                <p>
+                    This page demonstrates all available UI components in the ExportCase design system.
+                    Each component is designed to maintain consistency across the application.
+                </p>
+            </ec-typography>
 
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce vehicula dolor sed posuere gravida. Ut vestibulum quis ipsum sed commodo. In vehicula mauris nisi, eu rutrum dui sollicitudin vel. Cras volutpat maximus ipsum at ultrices. Vivamus iaculis, dolor imperdiet lacinia cursus, enim felis rutrum ex, eget eleifend neque lectus sit amet ligula. Quisque a metus aliquam, aliquam mi ut, accumsan risus. Integer faucibus consectetur magna, nec auctor urna finibus et. Sed congue tincidunt semper. Fusce commodo eget neque ac fermentum. Nunc ipsum nibh, mattis lacinia malesuada vel, suscipit at sapien. Sed cursus eleifend lorem, nec imperdiet diam faucibus vel. 
-            </p>
-        </ec-typography>
+            <!-- Typography Section -->
+            <section>
+                <ec-typography>
+                    <h2>Typography Components</h2>
+                    
+                    <h3>Headings</h3>
+                    <h1>Heading 1 - Main Title</h1>
+                    <h2>Heading 2 - Section Title</h2>
+                    <h3>Heading 3 - Subsection Title</h3>
+                    <h4>Heading 4 - Minor Title</h4>
+                    
+                    <h3>Text Content</h3>
+                    <p>
+                        This is a regular paragraph with <strong>bold text</strong> and <em>italic text</em>. 
+                        It demonstrates the typography styling for body content.
+                    </p>
+                    
+                    <p>
+                        Another paragraph to show spacing and line height. Lorem ipsum dolor sit amet, 
+                        consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </p>
+                    
+                    <h3>Lists</h3>
+                    <ul>
+                        <li>Unordered list item 1</li>
+                        <li>Unordered list item 2</li>
+                        <li>Unordered list item 3</li>
+                    </ul>
+                    
+                    <ol>
+                        <li>Ordered list item 1</li>
+                        <li>Ordered list item 2</li>
+                        <li>Ordered list item 3</li>
+                    </ol>
+                </ec-typography>
+            </section>
 
-        <ec-code>This is a code example !</ec-code>
+            <!-- Code Section -->
+            <section>
+                <ec-typography>
+                    <h2>Code Components</h2>
+                    
+                    <h3>Inline Code</h3>
+                    <p>
+                        Use <code>inline code</code> for short code snippets within text content.
+                    </p>
+                    
+                    <h3>Code Blocks</h3>
+                    <ec-code>npm install exportcase</ec-code>
+                    
+                    <ec-code>npx exportcase check ./src</ec-code>
+                    
+                    <ec-code>export function calculateSum(a: number, b: number): number {
+    return a + b;
+}</ec-code>
+                </ec-typography>
+            </section>
 
+            <!-- Rules Components Section -->
+            <section>
+                <ec-typography>
+                    <h2>Rules Documentation Components</h2>
+                    
+                    <h3>Complete Rules Section Example</h3>
+                    <ec-rules-title>ExportCase Rules Documentation</ec-rules-title>
+                    
+                    <section>
+                        <h2>Rule: Example Rule</h2>
+                        <ec-rule-content>
+                            <p>This is the content of a rule section. It demonstrates how rules are displayed in the documentation.</p>
+                            <p>Rules can contain <strong>bold text</strong> and <em>italic text</em> as well as <code>inline code</code>.</p>
+                        </ec-rule-content>
+                        
+                        <ec-example-group style="--example-group-color: #27ae60;">
+                            <span slot="title">✅ Good Examples</span>
+                            <ec-example style="--example-color: #27ae60;">
+                                <ec-file-name>good-example.ts</ec-file-name>
+                                <ec-explanation>This is a good example that follows the rule.</ec-explanation>
+                                <ec-code>export function goodExample(): string {
+    return "This follows the rule";
+}</ec-code>
+                            </ec-example>
+                        </ec-example-group>
+                        
+                        <ec-example-group style="--example-group-color: #e74c3c;">
+                            <span slot="title">❌ Bad Examples</span>
+                            <ec-example style="--example-color: #e74c3c;">
+                                <ec-file-name>bad-example.ts</ec-file-name>
+                                <ec-explanation>This is a bad example that violates the rule.</ec-explanation>
+                                <ec-code>export default function badExample(): string {
+    return "This violates the rule";
+}</ec-code>
+                            </ec-example>
+                        </ec-example-group>
+                    </section>
+                </ec-typography>
+            </section>
+
+            <!-- Background Section -->
+            <section>
+                <ec-typography>
+                    <h2>Background Component</h2>
+                    
+                    <p>
+                        The background component provides the visual foundation for the application.
+                        It's already applied to this page and creates the overall aesthetic.
+                    </p>
+                    
+                    <div>
+                        <p>This content is on a semi-transparent overlay to show how content appears over the background.</p>
+                    </div>
+                </ec-typography>
+            </section>
+
+            <!-- Component Combinations -->
+            <section>
+                <ec-typography>
+                    <h2>Component Combinations</h2>
+                    
+                    <h3>Documentation Style</h3>
+                    <p>Here's how components work together in a documentation context:</p>
+                    
+                    <ec-code>$ npm install exportcase</ec-code>
+                    
+                    <p>After installation, you can use the tool to check your TypeScript files:</p>
+                    
+                    <ec-code>$ npx exportcase check ./src
+
+Checking TypeScript files in: src
+✅ All files follow naming conventions</ec-code>
+                    
+                    <p>This demonstrates how typography, code blocks, and background work together to create readable documentation.</p>
+                </ec-typography>
+            </section>
+
+            <!-- Usage Guidelines -->
+            <section>
+                <ec-typography>
+                    <h2>Usage Guidelines</h2>
+                    
+                    <h3>When to use each component:</h3>
+                    
+                    <ul>
+                        <li><strong>ec-typography</strong>: Wrap all text content to ensure consistent styling</li>
+                        <li><strong>ec-code</strong>: Display code snippets, commands, or technical content</li>
+                        <li><strong>ec-background</strong>: Apply once per page for visual foundation</li>
+                        <li><strong>ec-rules-title</strong>: Main title for rules documentation</li>
+                        <li><strong>ec-rule-content</strong>: Content area for rule descriptions</li>
+                        <li><strong>ec-example-group</strong>: Group examples with colored titles (good/bad)</li>
+                        <li><strong>ec-example</strong>: Container for individual examples with colored left border</li>
+                        <li><strong>ec-file-name</strong>: Display file names in examples</li>
+                        <li><strong>ec-explanation</strong>: Explanatory text for examples</li>
+                    </ul>
+                    
+                    <h3>Best Practices:</h3>
+                    
+                    <ol>
+                        <li>Always wrap text content in <code>ec-typography</code></li>
+                        <li>Use <code>ec-code</code> for any code-related content</li>
+                        <li>Use <code>ec-example-group</code> with green (#27ae60) for good examples and red (#e74c3c) for bad examples</li>
+                        <li>Use <code>ec-example</code> with matching colors for the left border</li>
+                        <li>Maintain consistent spacing between sections</li>
+                        <li>Test components in different contexts</li>
+                    </ol>
+                </ec-typography>
+            </section>
+        </main>
 	</body>
 </html>

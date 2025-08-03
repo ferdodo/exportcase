@@ -1,0 +1,1 @@
+Enforces that each file exports exactly one named entity (function, class, constant, etc.).

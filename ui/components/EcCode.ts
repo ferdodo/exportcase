@@ -22,7 +22,7 @@ export class EcCode extends HTMLElement {
 			}
 
 			pre {
-				font-family: "jackinput";
+				font-family: monospace;
 				font-size: 0.9rem;
 				line-height: 1.3rem;
 				margin: 0;
