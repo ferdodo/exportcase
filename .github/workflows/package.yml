@@ -22,6 +22,7 @@ jobs:
       binary: exportcase.wasm
       setup: ./scripts/setup.sh
       build: ./scripts/build.sh
+      ref_name: ${{ inputs.ref_name }}
 
   compile-windows-fallback:
     name: 🪟 Windows fallback
@@ -33,6 +34,7 @@ jobs:
       binary: exportcase.exe
       setup: .\scripts\setup.ps1
       build: .\scripts\build.ps1
+      ref_name: ${{ inputs.ref_name }}
 
   compile-linux-fallback:
     name: 🐧 Linux fallback
@@ -44,6 +46,7 @@ jobs:
       binary: exportcase
       setup: ./scripts/setup.sh
       build: ./scripts/build.sh
+      ref_name: ${{ inputs.ref_name }}
 
   compile-macos-fallback:
     name: 🍎 Macos fallback
@@ -55,6 +58,7 @@ jobs:
       binary: exportcase
       setup: ./scripts/setup.sh
       build: ./scripts/build.sh
+      ref_name: ${{ inputs.ref_name }}
   
   package:
     name: 📦 Build npm package 
