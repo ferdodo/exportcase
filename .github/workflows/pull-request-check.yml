@@ -12,8 +12,12 @@ jobs:
   package:
     name: 📦 Package
     uses: ./.github/workflows/package.yml
+    with:
+      ref_name: ${{ github.head_ref }}
 
   test:
     name: 🐑 Test
     uses: ./.github/workflows/test.yml
     needs: package
+    with:
+      ref_name: ${{ github.head_ref }}
