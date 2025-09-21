@@ -9,6 +9,10 @@ on:
         default: ${{ github.ref_name }}
 
 jobs:
+  package:
+    name: 📦 Package
+    uses: ./.github/workflows/package.yml
+
   test:
     name: 🐑 Integration testing
     runs-on: ${{ matrix.os }}
