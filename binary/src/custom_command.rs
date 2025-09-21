@@ -1,9 +1,11 @@
 pub enum CliCommand {
     Check {
-        directory: String,
+        directory: Option<String>,
+        files: Option<Vec<String>>,
     },
     Format {
-        directory: String,
+        directory: Option<String>,
+        files: Option<Vec<String>>,
     },
 }
 

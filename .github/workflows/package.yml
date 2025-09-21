@@ -1,0 +1,155 @@
+name: 📦 Package
+
+on:
+  workflow_call:
+    inputs:
+      ref_name:
+        required: false
+        type: string
+        default: ${{ github.ref_name }}
+      rename_package:
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  compile-wasm:
+    name: 🧩 Compile wasm
+    uses: ./.github/workflows/compile.yml
+    with:
+      os: ubuntu-latest
+      target: wasm32-wasip1/release
+      binary: exportcase.wasm
+      setup: ./scripts/setup.sh
+      build: ./scripts/build.sh
+      ref_name: ${{ inputs.ref_name }}
+
+  compile-windows-fallback:
+    name: 🪟 Windows fallback
+    uses: ./.github/workflows/compile-fallback.yml
+    needs: compile-wasm
+    with:
+      os: windows-latest
+      target: release
+      binary: exportcase.exe
+      setup: .\scripts\setup.ps1
+      build: .\scripts\build.ps1
+      ref_name: ${{ inputs.ref_name }}
+
+  compile-linux-fallback:
+    name: 🐧 Linux fallback
+    uses: ./.github/workflows/compile-fallback.yml
+    needs: compile-wasm
+    with:
+      os: ubuntu-latest
+      target: release
+      binary: exportcase
+      setup: ./scripts/setup.sh
+      build: ./scripts/build.sh
+      ref_name: ${{ inputs.ref_name }}
+
+  compile-macos-fallback:
+    name: 🍎 Macos fallback
+    uses: ./.github/workflows/compile-fallback.yml
+    needs: compile-wasm
+    with:
+      os: macos-latest
+      target: release
+      binary: exportcase
+      setup: ./scripts/setup.sh
+      build: ./scripts/build.sh
+      ref_name: ${{ inputs.ref_name }}
+  
+  package:
+    name: 📦 Build npm package 
+    runs-on: ubuntu-latest
+    needs:
+      - compile-wasm
+      - compile-windows-fallback
+      - compile-linux-fallback
+      - compile-macos-fallback
+    steps:
+
+      - name: 🛒 Get source code
+        uses: actions/checkout@v4
+
+      - name: 📥 Download wasm binary
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.ref_name }}.exportcase.wasm
+          path: ./binary/target/wasm32-wasip1/release
+
+      - name: 📥 Download linux binary
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: ${{ inputs.ref_name }}.ubuntu-latest.exportcase
+          path: ./binary/target/release
+
+      - name: 📥 Download windows binary
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: ${{ inputs.ref_name }}.windows-latest.exportcase.exe
+          path: ./binary/target/release
+
+      - name: 📥 Download macos binary
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: ${{ inputs.ref_name }}.macos-latest.exportcase
+          path: ./binary/target/release
+
+      - name: Restore execution rights for apple
+        continue-on-error: true
+        run: chmod +x ./binary/target/release/darwin-exportcase
+
+      - name: 📂 Move binary to package
+        working-directory: ./package
+        run: npm run get-binaries
+      
+      - name: 🤝 Install cosign
+        uses: sigstore/cosign-installer@v3.4.0
+
+      - name: ✍🏻 Sign wasm release
+        working-directory: ./package
+        run: |
+          cosign sign-blob --yes --output-signature ./bin/exportcase.wasm.sig --output-certificate ./bin/exportcase.wasm.crt ./bin/exportcase.wasm
+          cat bin/build-info.md | envsubst > bin/build-info.subst.md
+          mv bin/build-info.subst.md bin/build-info.md
+
+      - name: ✍🏻 Sign windows release
+        working-directory: ./package
+        continue-on-error: true
+        run: cosign sign-blob --yes --output-signature ./bin/exportcase.exe.sig --output-certificate ./bin/exportcase.exe.crt ./bin/exportcase.exe
+
+      - name: ✍🏻 Sign linux release
+        working-directory: ./package
+        continue-on-error: true
+        run: cosign sign-blob --yes --output-signature ./bin/exportcase.sig --output-certificate ./bin/exportcase.crt ./bin/exportcase
+
+      - name: ✍🏻 Sign mac-os release
+        working-directory: ./package
+        continue-on-error: true
+        run: cosign sign-blob --yes --output-signature ./bin/darwin-exportcase.sig --output-certificate ./bin/darwin-exportcase.crt ./bin/darwin-exportcase
+
+      - name: 🗂️ Create archive
+        working-directory: ./package
+        run: npm pack
+
+      - name: 📝 Rename archive to match branch name
+        if: ${{ inputs.rename_package }}
+        working-directory: ./package
+        run: |
+          TARBALL=$(ls *.tgz | head -1)
+          mv "$TARBALL" "exportcase-${{ inputs.ref_name }}.tgz"
+
+      - name: 🚀 Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.ref_name }}
+          path: package/exportcase-${{ inputs.ref_name }}.tgz

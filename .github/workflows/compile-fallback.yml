@@ -16,6 +16,10 @@ on:
       build:
         required: true
         type: string
+      ref_name:
+        required: false
+        type: string
+        default: ${{ github.ref_name }}
 
 jobs:
   compile:
@@ -28,7 +32,7 @@ jobs:
       - name: 📥 Download wasm binary
         uses: actions/download-artifact@v4
         with:
-          name: ${{ github.ref_name }}.exportcase.wasm
+          name: ${{ inputs.ref_name }}.exportcase.wasm
           path: ./binary/target/wasm32-wasip1/release
 
       - name: 📂 Move binary to package
@@ -62,5 +66,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: steps.testing.outcome == 'failure'
         with:
-          name: ${{ github.ref_name }}.${{ inputs.os }}.${{ inputs.binary }}
+          name: ${{ inputs.ref_name }}.${{ inputs.os }}.${{ inputs.binary }}
           path: ./binary/target/${{ inputs.target }}/${{ runner.os == 'macOS' && 'darwin-' || '' }}${{ inputs.binary }}

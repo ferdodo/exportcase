@@ -1,0 +1,54 @@
+name: 🐑 Test
+
+on:
+  workflow_call:
+    inputs:
+      ref_name:
+        required: false
+        type: string
+        default: ${{ github.ref_name }}
+
+jobs:
+  package:
+    name: 📦 Package
+    uses: ./.github/workflows/package.yml
+    with:
+      ref_name: ${{ inputs.ref_name }}
+      rename_package: true
+
+  test:
+    name: 🐑 Integration testing
+    runs-on: ${{ matrix.os }}
+    needs: package
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        node: [16, 'latest']
+
+    steps:
+        - name: 🛒 Get source code
+          uses: actions/checkout@v4
+
+        - name: 🧹 Remove existing package directory (Linux/MacOS)
+          if: runner.os == 'Linux' || runner.os == 'macOS'
+          run: rm -rf ./package
+
+        - name: 🧹 Remove existing package directory (Windows)
+          if: runner.os == 'Windows'
+          run: Remove-Item -Recurse -Force .\package
+
+        - name: 📥 Download artifact
+          uses: actions/download-artifact@v4
+          with:
+            name: ${{ inputs.ref_name }}
+
+        - name: 📦 Extract npm package
+          run: tar -xzf exportcase-${{ inputs.ref_name }}.tgz
+
+        - name: 🔬 Run spec testing
+          working-directory: ./spec
+          run: |
+            npm install
+            npm run build
+            npm run test
