@@ -26,11 +26,11 @@ fn main() {
     let args = read_custom_command(cli_command);
     
     match args.command {
-        CliCommand::Check { directory } => {
-            check_command(directory);
+        CliCommand::Check { directory, files } => {
+            check_command(directory, files);
         },
-        CliCommand::Format { directory } => {
-            format_command(directory);
+        CliCommand::Format { directory, files } => {
+            format_command(directory, files);
         }
     }
 } 
