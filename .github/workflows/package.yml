@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: ${{ github.ref_name }}
+      rename_package:
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   id-token: write
@@ -136,6 +140,13 @@ jobs:
       - name: 🗂️ Create archive
         working-directory: ./package
         run: npm pack
+
+      - name: 📝 Rename archive to match branch name
+        if: ${{ inputs.rename_package }}
+        working-directory: ./package
+        run: |
+          TARBALL=$(ls *.tgz | head -1)
+          mv "$TARBALL" "exportcase-${{ inputs.ref_name }}.tgz"
 
       - name: 🚀 Upload artifact
         uses: actions/upload-artifact@v4

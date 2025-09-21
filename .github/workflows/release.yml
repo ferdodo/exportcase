@@ -13,6 +13,8 @@ jobs:
   package:
     name: 📦 Package
     uses: ./.github/workflows/package.yml
+    with:
+      rename_package: false
 
   test:
     name: 🐑 Test
