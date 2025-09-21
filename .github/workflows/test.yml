@@ -12,6 +12,8 @@ jobs:
   package:
     name: 📦 Package
     uses: ./.github/workflows/package.yml
+    with:
+      ref_name: ${{ inputs.ref_name }}
 
   test:
     name: 🐑 Integration testing
