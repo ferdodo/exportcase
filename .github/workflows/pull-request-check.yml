@@ -1,0 +1,15 @@
+name: 🔍 Pull Request Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  package:
+    name: 📦 Package
+    uses: ./.github/workflows/package.yml
+
+  test:
+    name: 🐑 Test
+    uses: ./.github/workflows/test.yml
+    needs: package
