@@ -10,17 +10,12 @@ permissions:
   contents: write
 
 jobs:
-  package:
-    name: 📦 Package
-    uses: ./.github/workflows/package.yml
-    with:
-      ref_name: ${{ github.ref_name }}
-      rename_package: false
-
   test:
     name: 🐑 Test
     uses: ./.github/workflows/test.yml
     needs: package
+    with:
+      ref_name: ${{ github.ref_name }}
 
   release:
     name: 🌎 Create release
