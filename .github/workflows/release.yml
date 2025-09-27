@@ -14,6 +14,7 @@ jobs:
     name: 📦 Package
     uses: ./.github/workflows/package.yml
     with:
+      ref_name: ${{ github.ref_name }}
       rename_package: false
 
   test:
