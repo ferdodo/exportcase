@@ -18,7 +18,7 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       ref_name: ${{ inputs.ref_name }}
-      rename_package: ${{ rename_package }}
+      rename_package: ${{ inputs.rename_package }}
 
   test:
     name: 🐑 Integration testing
