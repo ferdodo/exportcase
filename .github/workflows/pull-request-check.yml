@@ -14,3 +14,4 @@ jobs:
     uses: ./.github/workflows/test.yml
     with:
       ref_name: ${{ github.head_ref }}
+      rename_package: true

@@ -7,6 +7,10 @@ on:
         required: false
         type: string
         default: ${{ github.ref_name }}
+      rename_package:
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   package:
@@ -14,7 +18,7 @@ jobs:
     uses: ./.github/workflows/package.yml
     with:
       ref_name: ${{ inputs.ref_name }}
-      rename_package: true
+      rename_package: ${{ rename_package }}
 
   test:
     name: 🐑 Integration testing
