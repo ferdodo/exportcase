@@ -10,10 +10,10 @@ permissions:
   contents: write
 
 jobs:
+
   test:
     name: 🐑 Test
     uses: ./.github/workflows/test.yml
-    needs: package
     with:
       ref_name: ${{ github.ref_name }}
 
