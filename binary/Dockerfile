@@ -8,7 +8,7 @@ RUN mkdir -p src
 RUN echo "fn main() { println!(\"Hello, world!\"); }" > src/main.rs
 RUN ./scripts/build.sh
 
-FROM exportcase-binary-prebuild
+FROM binary-prebuild
 COPY . .
 RUN ./scripts/check_src_max_length.sh
 RUN cargo test
