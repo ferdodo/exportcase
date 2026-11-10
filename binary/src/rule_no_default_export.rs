@@ -1,12 +1,14 @@
 use crate::ts_exports::TSExports;
 use crate::src_file::SrcFile;
-use crate::rule_result::RuleResult;
+use crate::rule_result::{explain, RuleResult};
 
 pub fn rule_no_default_export(ts_exports: &TSExports, _src_file: &SrcFile) -> RuleResult {
-    if ts_exports.default_export.is_some() {
-        return RuleResult::Error(vec![
-            "Default exports are not allowed".to_string()
-        ]);
+    if let Some(name) = &ts_exports.default_export {
+        return RuleResult::Error(vec![explain(
+            &format!("Default export '{}' is not allowed", name),
+            "a default export can be imported under any name, so the same thing ends up called differently across the codebase and the filename can no longer be trusted",
+            &format!("replace `export default {0}` with a named export: `export {{ {0} }}` or `export function {0}`", name),
+        )]);
     }
     RuleResult::Ok
 }

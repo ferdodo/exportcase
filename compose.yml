@@ -8,14 +8,14 @@ services:
   binary:
     build:
       context: ./binary
-    depends_on:
-      - binary-prebuild
+      additional_contexts:
+        binary-prebuild: service:binary-prebuild
 
   package:
     build:
-      context: ./package 
-    depends_on:
-      - binary
+      context: ./package
+      additional_contexts:
+        exportcase-binary: service:binary
 
   ui:
     build: ui
@@ -23,14 +23,16 @@ services:
       - "127.0.0.1:26023:26023"
 
   website:
-    build: website
+    build:
+      context: website
+      additional_contexts:
+        exportcase-ui: service:ui
+        exportcase-spec: service:spec
     ports:
       - "25032:25032"
-    depends_on:
-      - ui
-      - spec
 
   spec:
-    build: spec
-    depends_on:
-      - package
+    build:
+      context: spec
+      additional_contexts:
+        exportcase-package: service:package
