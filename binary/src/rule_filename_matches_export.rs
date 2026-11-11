@@ -1,6 +1,6 @@
 use crate::ts_exports::TSExports;
 use crate::src_file::SrcFile;
-use crate::rule_result::{explain, is_index_file, RuleResult};
+use crate::rule_result::{error, is_index_file, RuleResult, Suggestion};
 use std::path::Path;
 
 pub fn rule_filename_matches_export(ts_exports: &TSExports, src_file: &SrcFile) -> RuleResult {
@@ -26,8 +26,10 @@ pub fn rule_filename_matches_export(ts_exports: &TSExports, src_file: &SrcFile) 
         return RuleResult::Ok;
     }
 
-    RuleResult::Error(vec![explain(
-        &format!("Filename '{}' does not match its export '{}'", filename, export_name),
+    error(
+        "filename-matches-export",
+        ts_exports.first_export_pos.unwrap_or_default(),
+        format!("Filename '{}' does not match its export '{}'", filename, export_name),
         &format!(
             "when the file is named after what it exports, you can find {0} without searching, and `import {{ {0} }} from './{0}'` reads consistently everywhere",
             export_name
@@ -36,7 +38,11 @@ pub fn rule_filename_matches_export(ts_exports: &TSExports, src_file: &SrcFile) 
             "rename {}.{} to {}.{} (`exportcase format` generates the rename commands for you)",
             filename, extension, export_name, extension
         ),
-    )])
+        Some(Suggestion::Move {
+            from: src_file.path.clone(),
+            to: path.with_file_name(format!("{}.{}", export_name, extension)).to_string_lossy().to_string(),
+        }),
+    )
 }
 
 #[cfg(test)]
@@ -71,7 +77,7 @@ mod tests {
         ts_exports.named_exports.push("foo".to_string());
         let result = rule_filename_matches_export(&ts_exports, &file("bar.tsx"));
         match result {
-            RuleResult::Error(msgs) => assert!(msgs[0].contains("rename bar.tsx to foo.tsx")),
+            RuleResult::Error(diags) => assert!(diags[0].fix.contains("rename bar.tsx to foo.tsx")),
             RuleResult::Ok => panic!("expected an error"),
         }
     }

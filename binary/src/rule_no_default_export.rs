@@ -1,14 +1,30 @@
 use crate::ts_exports::TSExports;
 use crate::src_file::SrcFile;
-use crate::rule_result::{explain, RuleResult};
+use crate::rule_result::{error, RuleResult, Suggestion};
 
-pub fn rule_no_default_export(ts_exports: &TSExports, _src_file: &SrcFile) -> RuleResult {
+/// Rewrites `export default X` as a named export on the same line, when the line allows it.
+fn default_fix(line: &str, name: &str) -> String {
+    if line.contains("export default function") || line.contains("export default class") {
+        line.replacen("export default ", "export ", 1)
+    } else {
+        line.replacen(&format!("export default {}", name), &format!("export {{ {} }}", name), 1)
+    }
+}
+
+pub fn rule_no_default_export(ts_exports: &TSExports, src_file: &SrcFile) -> RuleResult {
     if let Some(name) = &ts_exports.default_export {
-        return RuleResult::Error(vec![explain(
-            &format!("Default export '{}' is not allowed", name),
+        let pos = ts_exports.default_pos.unwrap_or_default();
+        let line = src_file.content.lines().nth(pos.line - 1).unwrap_or("").trim_end().to_string();
+        let after = default_fix(&line, name);
+        let suggestion = (after != line).then(|| Suggestion::Replace { before: line, after });
+        return error(
+            "no-default-export",
+            pos,
+            format!("Default export '{}' is not allowed", name),
             "a default export can be imported under any name, so the same thing ends up called differently across the codebase and the filename can no longer be trusted",
             &format!("replace `export default {0}` with a named export: `export {{ {0} }}` or `export function {0}`", name),
-        )]);
+            suggestion,
+        );
     }
     RuleResult::Ok
 }

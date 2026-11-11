@@ -1,17 +1,22 @@
+use crate::export_positions::track_positions;
 use crate::src_file::SrcFile;
 use crate::ts_exports::TSExports;
 use crate::ts_parser::parse_ts_file;
+use swc_common::Spanned;
 use swc_ecma_ast::{
     Decl, DefaultDecl, ExportDecl, ExportDefaultDecl, ExportDefaultExpr, ExportSpecifier,
     ModuleDecl, ModuleItem,
 };
 
 pub fn read_ts_exports(src_file: &SrcFile) -> Result<TSExports, String> {
-    let module = parse_ts_file(src_file)?;
-    
+    let (module, cm) = parse_ts_file(src_file)?;
+
     let mut ts_exports = TSExports::default();
-    
+
     for item in &module.body {
+        if let ModuleItem::ModuleDecl(decl) = item {
+            track_positions(&mut ts_exports, decl, &cm, item.span().lo);
+        }
         match item {
             ModuleItem::ModuleDecl(decl) => match decl {
                 ModuleDecl::ExportDefaultDecl(ExportDefaultDecl { decl, .. }) => {
