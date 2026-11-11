@@ -5,7 +5,7 @@ use swc_common::sync::Lrc;
 use swc_common::SourceMap;
 use swc_ecma_parser::{lexer::Lexer, Parser, StringInput, Syntax};
 
-pub fn parse_ts_file(src_file: &SrcFile) -> Result<swc_ecma_ast::Module, String> {
+pub fn parse_ts_file(src_file: &SrcFile) -> Result<(swc_ecma_ast::Module, Lrc<SourceMap>), String> {
     let cm: Lrc<SourceMap> = Default::default();
     let _handler = Handler::with_tty_emitter(ColorConfig::Auto, true, false, Some(cm.clone()));
     
@@ -41,17 +41,19 @@ pub fn parse_ts_file(src_file: &SrcFile) -> Result<swc_ecma_ast::Module, String>
     
     if is_tsx {
         match parser.parse_module() {
-            Ok(module) => Ok(module),
+            Ok(module) => Ok((module, cm.clone())),
             Err(_) => {
-                Ok(swc_ecma_ast::Module {
+                let empty = swc_ecma_ast::Module {
                     span: Default::default(),
                     body: Vec::new(),
                     shebang: None,
-                })
+                };
+                Ok((empty, cm.clone()))
             }
         }
     } else {
         parser.parse_module()
+            .map(|module| (module, cm.clone()))
             .map_err(|e| format!("Error during parsing: {:?}", e))
     }
 } 

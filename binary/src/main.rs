@@ -14,6 +14,8 @@ mod rule_filename_matches_export;
 mod rule_no_default_export;
 mod rule_result;
 mod ts_parser;
+mod export_positions;
+mod render;
 
 use crate::custom_command::CliCommand;
 use crate::read_custom_command::read_custom_command;

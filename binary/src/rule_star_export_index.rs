@@ -1,6 +1,6 @@
 use crate::ts_exports::TSExports;
 use crate::src_file::SrcFile;
-use crate::rule_result::{explain, is_index_file, RuleResult};
+use crate::rule_result::{error, is_index_file, RuleResult};
 
 const INDEX_WHY: &str = "every other file exports exactly one name matching its filename, so `export * from './A'` already exposes exactly `A`. Listing names again in index.ts duplicates them, goes stale when files are renamed, and cannot be checked against filenames";
 
@@ -30,22 +30,28 @@ pub fn rule_star_export_index(ts_exports: &TSExports, src_file: &SrcFile) -> Rul
             format!("replace the named re-exports with {}", lines.join(" "))
         };
 
-        return RuleResult::Error(vec![explain(
-            &format!(
+        return error(
+            "star-export-index",
+            ts_exports.first_export_pos.unwrap_or_default(),
+            format!(
                 "index files may only contain `export * from '...'` lines, but this one exports {}",
                 names.join(", ")
             ),
             INDEX_WHY,
             &fix,
-        )]);
+            None,
+        );
     }
 
     if ts_exports.has_star_export {
-        return RuleResult::Error(vec![explain(
-            "`export * from '...'` is only allowed in index.ts files",
+        return error(
+            "star-export-index",
+            ts_exports.star_export_pos.unwrap_or_default(),
+            "`export * from '...'` is only allowed in index.ts files".to_string(),
             "a star export hides which name a file provides, so exportcase cannot check that the filename matches it. index.ts is the one place meant for grouping",
             "move this re-export into the folder's index.ts, or export a single value from this file directly",
-        )]);
+            None,
+        );
     }
 
     RuleResult::Ok
@@ -85,7 +91,7 @@ mod tests {
         ts_exports.reexport_sources.push("./A".to_string());
         let result = rule_star_export_index(&ts_exports, &file("index.ts"));
         match result {
-            RuleResult::Error(msgs) => assert!(msgs[0].contains("`export * from './A';`")),
+            RuleResult::Error(diags) => assert!(diags[0].fix.contains("`export * from './A';`")),
             RuleResult::Ok => panic!("expected an error"),
         }
     }

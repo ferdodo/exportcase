@@ -1,6 +1,6 @@
 use crate::ts_exports::TSExports;
 use crate::src_file::SrcFile;
-use crate::rule_result::{explain, is_index_file, RuleResult};
+use crate::rule_result::{error, is_index_file, RuleResult};
 
 pub fn rule_single_named_export(ts_exports: &TSExports, src_file: &SrcFile) -> RuleResult {
     // Index files are handled by rule_star_export_index, which gives index-specific advice.
@@ -10,8 +10,10 @@ pub fn rule_single_named_export(ts_exports: &TSExports, src_file: &SrcFile) -> R
 
     let names = &ts_exports.named_exports;
     let files: Vec<String> = names.iter().map(|n| format!("{}.ts", n)).collect();
-    RuleResult::Error(vec![explain(
-        &format!(
+    error(
+        "single-named-export",
+        ts_exports.first_export_pos.unwrap_or_default(),
+        format!(
             "This file has {} named exports ({}), but only one is allowed per file",
             names.len(),
             names.join(", ")
@@ -25,7 +27,8 @@ pub fn rule_single_named_export(ts_exports: &TSExports, src_file: &SrcFile) -> R
             files.join(", "),
             names[0]
         ),
-    )])
+        None,
+    )
 }
 
 #[cfg(test)]
@@ -53,9 +56,9 @@ mod tests {
         ts_exports.named_exports.push("Bar".to_string());
         let result = rule_single_named_export(&ts_exports, &file("foo.ts"));
         match result {
-            RuleResult::Error(msgs) => {
-                assert!(msgs[0].contains("Foo, Bar"));
-                assert!(msgs[0].contains("Fix:"));
+            RuleResult::Error(diags) => {
+                assert!(diags[0].problem.contains("Foo, Bar"));
+                assert!(!diags[0].fix.is_empty());
             }
             RuleResult::Ok => panic!("expected an error"),
         }
