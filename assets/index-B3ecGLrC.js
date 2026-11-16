@@ -1,4 +1,4 @@
-var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configurable:!0,writable:!0,value:n}):t[e]=n;var r=(t,e,n)=>y(t,typeof e!="symbol"?e+"":e,n);(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const o of document.querySelectorAll('link[rel="modulepreload"]'))s(o);new MutationObserver(o=>{for(const a of o)if(a.type==="childList")for(const l of a.addedNodes)l.tagName==="LINK"&&l.rel==="modulepreload"&&s(l)}).observe(document,{childList:!0,subtree:!0});function n(o){const a={};return o.integrity&&(a.integrity=o.integrity),o.referrerPolicy&&(a.referrerPolicy=o.referrerPolicy),o.crossOrigin==="use-credentials"?a.credentials="include":o.crossOrigin==="anonymous"?a.credentials="omit":a.credentials="same-origin",a}function s(o){if(o.ep)return;o.ep=!0;const a=n(o);fetch(o.href,a)}})();function u(t){const e=document.createElement("template");return e.innerHTML=t.join(""),e}const i=class i extends HTMLElement{async connectedCallback(){var e;this.attachShadow({mode:"open"}),(e=this.shadowRoot)==null||e.appendChild(i.template.content.cloneNode(!0))}};r(i,"template",u`
+var w=Object.defineProperty;var y=(t,e,o)=>e in t?w(t,e,{enumerable:!0,configurable:!0,writable:!0,value:o}):t[e]=o;var r=(t,e,o)=>y(t,typeof e!="symbol"?e+"":e,o);(function(){const e=document.createElement("link").relList;if(e&&e.supports&&e.supports("modulepreload"))return;for(const n of document.querySelectorAll('link[rel="modulepreload"]'))s(n);new MutationObserver(n=>{for(const a of n)if(a.type==="childList")for(const l of a.addedNodes)l.tagName==="LINK"&&l.rel==="modulepreload"&&s(l)}).observe(document,{childList:!0,subtree:!0});function o(n){const a={};return n.integrity&&(a.integrity=n.integrity),n.referrerPolicy&&(a.referrerPolicy=n.referrerPolicy),n.crossOrigin==="use-credentials"?a.credentials="include":n.crossOrigin==="anonymous"?a.credentials="omit":a.credentials="same-origin",a}function s(n){if(n.ep)return;n.ep=!0;const a=o(n);fetch(n.href,a)}})();function u(t){const e=document.createElement("template");return e.innerHTML=t.join(""),e}const i=class i extends HTMLElement{async connectedCallback(){var e;this.attachShadow({mode:"open"}),(e=this.shadowRoot)==null||e.appendChild(i.template.content.cloneNode(!0))}};r(i,"template",u`
 	<style>
 		:host {
 			width: 100svw;
@@ -174,8 +174,16 @@ var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configura
 		</div>
 	</div>
 </div>
-`);let m=i;const c=class c extends HTMLElement{async connectedCallback(){var n;this.attachShadow({mode:"open"});const e=c.template.content.cloneNode(!0);(n=this.shadowRoot)==null||n.appendChild(e)}};r(c,"template",u`
+`);let m=i;const c=class c extends HTMLElement{async connectedCallback(){var o;this.attachShadow({mode:"open"});const e=c.template.content.cloneNode(!0);(o=this.shadowRoot)==null||o.appendChild(e)}};r(c,"template",u`
 		<style>
+			:host {
+				display: block;
+			}
+
+			::slotted(h1), ::slotted(h2), ::slotted(h3) {
+				margin-top: 8rem;
+			}
+
 			::slotted(*) {
 				color: #C2C2C2;
 				font-family: "Saeada";
@@ -248,7 +256,7 @@ var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configura
                     }
                 </style>
                 <slot></slot>
-            `)}}class C extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot&&(this.shadowRoot.innerHTML=`
+            `)}}class k extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot&&(this.shadowRoot.innerHTML=`
                 <style>
                     :host {
                         display: block;
@@ -259,7 +267,7 @@ var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configura
                     }
                 </style>
                 <slot></slot>
-            `)}}class k extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot&&(this.shadowRoot.innerHTML=`
+            `)}}class C extends HTMLElement{constructor(){super(),this.attachShadow({mode:"open"})}connectedCallback(){this.shadowRoot&&(this.shadowRoot.innerHTML=`
                 <style>
                     :host {
                         display: block;
@@ -279,6 +287,7 @@ var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configura
                     .title {
                         color: var(--example-group-color, #666);
                         font-family: "Saeada";
+                        margin-top: 3rem;
                         margin-bottom: 1rem;
                         font-size: 1.3rem;
                         font-weight: bold;
@@ -308,7 +317,7 @@ var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configura
                     }
                 </style>
                 <slot></slot>
-            `)}}customElements.define("ec-background",m);customElements.define("ec-typography",p);customElements.define("ec-code",h);customElements.define("ec-example",E);customElements.define("ec-file-name",C);customElements.define("ec-explanation",k);customElements.define("ec-example-group",S);customElements.define("ec-rule-content",F);customElements.define("ec-rules-title",M);const L=[{name:"filename-matches-export",content:"Enforces that the filename matches the name of the exported entity.",goodExamples:[{file:"Calculator.ts",explanation:"Matching filename and export name makes code easier to find and navigate.",code:`export class Calculator {
+            `)}}customElements.define("ec-background",m);customElements.define("ec-typography",p);customElements.define("ec-code",h);customElements.define("ec-example",E);customElements.define("ec-file-name",k);customElements.define("ec-explanation",C);customElements.define("ec-example-group",S);customElements.define("ec-rule-content",F);customElements.define("ec-rules-title",M);const L=[{name:"filename-matches-export",content:"Enforces that the filename matches the name of the exported entity.",goodExamples:[{file:"Calculator.ts",explanation:"Matching filename and export name makes code easier to find and navigate.",code:`export class Calculator {
     add(a: number, b: number): number {
         return a + b;
     }
@@ -332,4 +341,4 @@ export const PI = 3.14159; `}]},{name:"star-export-index",content:"Allows star e
 
 export function someFunction(): string {
     return "some function";
-} `}]}];function x(t){const e=document.createElement("div");return e.textContent=t,e.innerHTML}function T(){const t=document.createElement("div");t.className="rules-documentation";const e=document.createElement("h2");e.textContent="Rules";const n=document.createElement("ec-typography");return n.appendChild(e),t.appendChild(n),L.forEach(s=>{const o=R(s);t.appendChild(o)}),t}function R(t){const e=document.createElement("section");e.className="rule-section";const n=document.createElement("h3");n.className="rule-title",n.textContent=`Rule: ${t.name.replace(/-/g," ").replace(/\b\w/g,l=>l.toUpperCase())}`;const s=document.createElement("ec-typography");s.appendChild(n),e.appendChild(s);const o=document.createElement("ec-rule-content"),a=document.createElement("ec-typography");if(a.innerHTML=N(t.content),o.appendChild(a),e.appendChild(o),t.goodExamples.length>0||t.badExamples.length>0){const l=H(t);e.appendChild(l)}return e}function H(t){const e=document.createElement("div");if(t.goodExamples.length>0){const n=v("✅ Good Examples",t.goodExamples,"#27ae60");e.appendChild(n)}if(t.badExamples.length>0){const n=v("❌ Bad Examples",t.badExamples,"#e74c3c");e.appendChild(n)}return e}function v(t,e,n){const s=document.createElement("ec-example-group");s.style.setProperty("--example-group-color",n);const o=document.createElement("span");return o.setAttribute("slot","title"),o.textContent=t,s.appendChild(o),e.forEach(a=>{const l=document.createElement("ec-example");l.style.setProperty("--example-color",n);const f=document.createElement("ec-file-name");f.textContent=a.file,l.appendChild(f);const b=document.createElement("ec-explanation");b.textContent=a.explanation,l.appendChild(b);const g=document.createElement("ec-code");g.textContent=a.code,l.appendChild(g),s.appendChild(l)}),s}function N(t){return`<p>${t.replace(/^### (.*$)/gim,"<h3>$1</h3>").replace(/^## (.*$)/gim,"<h2>$1</h2>").replace(/^# (.*$)/gim,"<h1>$1</h1>").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\*(.*?)\*/g,"<em>$1</em>").replace(/```(\w+)?\n([\s\S]*?)```/g,(n,s,o)=>`<pre><code>${x(o)}</code></pre>`).replace(/`([^`]+)`/g,(n,s)=>`<code>${x(s)}</code>`).replace(/\n/g,"<br>")}</p>`}document.addEventListener("DOMContentLoaded",()=>{const t=document.querySelector('div[style*="display: flex"][style*="place-content: center"]');if(t&&t.parentNode){const e=T();t.parentNode.insertBefore(e,t)}});
+} `}]}];function x(t){const e=document.createElement("div");return e.textContent=t,e.innerHTML}function T(){const t=document.createElement("div");return t.className="rules-documentation",L.forEach(e=>{const o=H(e);t.appendChild(o)}),t}function H(t){const e=document.createElement("section");e.className="rule-section";const o=document.createElement("h2");o.className="rule-title",o.textContent=`Rule: ${t.name.replace(/-/g," ").replace(/\b\w/g,l=>l.toUpperCase())}`;const s=document.createElement("ec-typography");s.appendChild(o),e.appendChild(s);const n=document.createElement("ec-rule-content"),a=document.createElement("ec-typography");if(a.innerHTML=N(t.content),n.appendChild(a),e.appendChild(n),t.goodExamples.length>0||t.badExamples.length>0){const l=R(t);e.appendChild(l)}return e}function R(t){const e=document.createElement("div");if(t.goodExamples.length>0){const o=v("✅ Good Examples",t.goodExamples,"#27ae60");e.appendChild(o)}if(t.badExamples.length>0){const o=v("❌ Bad Examples",t.badExamples,"#e74c3c");e.appendChild(o)}return e}function v(t,e,o){const s=document.createElement("ec-example-group");s.style.setProperty("--example-group-color",o);const n=document.createElement("span");return n.setAttribute("slot","title"),n.textContent=t,s.appendChild(n),e.forEach(a=>{const l=document.createElement("ec-example");l.style.setProperty("--example-color",o);const f=document.createElement("ec-file-name");f.textContent=a.file,l.appendChild(f);const b=document.createElement("ec-explanation");b.textContent=a.explanation,l.appendChild(b);const g=document.createElement("ec-code");g.textContent=a.code,l.appendChild(g),s.appendChild(l)}),s}function N(t){return`<p>${t.replace(/^### (.*$)/gim,"<h3>$1</h3>").replace(/^## (.*$)/gim,"<h2>$1</h2>").replace(/^# (.*$)/gim,"<h1>$1</h1>").replace(/\*\*(.*?)\*\*/g,"<strong>$1</strong>").replace(/\*(.*?)\*/g,"<em>$1</em>").replace(/```(\w+)?\n([\s\S]*?)```/g,(o,s,n)=>`<pre><code>${x(n)}</code></pre>`).replace(/`([^`]+)`/g,(o,s)=>`<code>${x(s)}</code>`).replace(/\n/g,"<br>")}</p>`}document.addEventListener("DOMContentLoaded",()=>{const t=document.querySelector('div[style*="display: flex"][style*="place-content: center"]');if(t&&t.parentNode){const e=T();t.parentNode.insertBefore(e,t)}});
