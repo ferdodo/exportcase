@@ -278,6 +278,7 @@ var w=Object.defineProperty;var y=(t,e,n)=>e in t?w(t,e,{enumerable:!0,configura
                     
                     .title {
                         color: var(--example-group-color, #666);
+                        font-family: "Saeada";
                         margin-bottom: 1rem;
                         font-size: 1.3rem;
                         font-weight: bold;
