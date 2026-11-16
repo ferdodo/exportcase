@@ -9,20 +9,25 @@ pub fn rule_filename_matches_export(ts_exports: &TSExports, src_file: &SrcFile) 
         return RuleResult::Ok;
     }
 
+    // Default exports are forbidden by rule_no_default_export, which already reports them:
+    // don't also ask to rename the file after a default export.
+    if ts_exports.default_export.is_some() {
+        return RuleResult::Ok;
+    }
+
     let path = Path::new(&src_file.path);
     let filename = path.file_stem().map(|s| s.to_string_lossy()).unwrap_or_default();
     let extension = path.extension().map(|e| e.to_string_lossy()).unwrap_or_default();
 
-    let matches_default = ts_exports.default_export.as_deref() == Some(filename.as_ref());
     let matches_named = ts_exports.named_exports.iter().any(|n| n == filename.as_ref());
 
-    let export_name = match ts_exports.named_exports.first().or(ts_exports.default_export.as_ref()) {
+    let export_name = match ts_exports.named_exports.first() {
         Some(name) => name,
         // No nameable export: nothing to compare against (star exports are reported elsewhere).
         None => return RuleResult::Ok,
     };
 
-    if matches_default || matches_named {
+    if matches_named {
         return RuleResult::Ok;
     }
 
@@ -68,6 +73,14 @@ mod tests {
         let mut ts_exports = TSExports::default();
         ts_exports.default_export = Some("bar".to_string());
         let result = rule_filename_matches_export(&ts_exports, &file("bar.ts"));
+        assert!(matches!(result, RuleResult::Ok));
+    }
+
+    #[test]
+    fn test_default_export_is_left_to_no_default_export_rule() {
+        let mut ts_exports = TSExports::default();
+        ts_exports.default_export = Some("Pricing".to_string());
+        let result = rule_filename_matches_export(&ts_exports, &file("pricing.tsx"));
         assert!(matches!(result, RuleResult::Ok));
     }
 
