@@ -13,13 +13,6 @@ function createRulesSection() {
     const container = document.createElement('div');
     container.className = 'rules-documentation';
 
-    const title = document.createElement('h2');
-    title.textContent = 'Rules';
-    
-    const titleTypography = document.createElement('ec-typography');
-    titleTypography.appendChild(title);
-    container.appendChild(titleTypography);
-
     rules.forEach(rule => {
         const ruleSection = createRuleSection(rule);
         container.appendChild(ruleSection);
@@ -32,7 +25,7 @@ function createRuleSection(rule: Rule) {
     const section = document.createElement('section');
     section.className = 'rule-section';
 
-    const ruleName = document.createElement('h3');
+    const ruleName = document.createElement('h2');
     ruleName.className = 'rule-title';
     ruleName.textContent = `Rule: ${rule.name.replace(/-/g, ' ').replace(/\b\w/g, (l: string) => l.toUpperCase())}`;
     

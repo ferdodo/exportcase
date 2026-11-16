@@ -8,7 +8,7 @@ export class EcTypography extends HTMLElement {
 			}
 
 			::slotted(h1), ::slotted(h2), ::slotted(h3) {
-				margin-top: 5rem;
+				margin-top: 8rem;
 			}
 
 			::slotted(*) {
