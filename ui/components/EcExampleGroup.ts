@@ -15,6 +15,7 @@ export class EcExampleGroup extends HTMLElement {
                     
                     .title {
                         color: var(--example-group-color, #666);
+                        font-family: "Saeada";
                         margin-bottom: 1rem;
                         font-size: 1.3rem;
                         font-weight: bold;
