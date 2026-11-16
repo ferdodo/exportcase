@@ -3,6 +3,14 @@ import { html } from "../utils/html";
 export class EcTypography extends HTMLElement {
 	static template = html`
 		<style>
+			:host {
+				display: block;
+			}
+
+			::slotted(h1), ::slotted(h2), ::slotted(h3) {
+				margin-top: 5rem;
+			}
+
 			::slotted(*) {
 				color: #C2C2C2;
 				font-family: "Saeada";
